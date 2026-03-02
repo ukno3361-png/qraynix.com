@@ -1,0 +1,171 @@
+<!-- ============================================
+     Home Page
+     ============================================
+     Main landing page with hero, features, about,
+     and contact sections. Uses the main layout.
+-->
+
+<!-- Hero Section -->
+<section class="hero" id="hero">
+    <div class="hero-bg-effects">
+        <div class="hero-orb hero-orb--1"></div>
+        <div class="hero-orb hero-orb--2"></div>
+        <div class="hero-orb hero-orb--3"></div>
+    </div>
+
+    <div class="hero-content">
+        <span class="hero-badge">✦ Welcome to the Future</span>
+        <h1 class="hero-title">
+            Build Something
+            <span class="hero-gradient-text">Extraordinary</span>
+        </h1>
+        <p class="hero-subtitle">
+            <%= typeof tagline !=='undefined' ? tagline : 'Innovation Starts Here' %>.
+                We craft digital experiences that push the boundaries of what's possible.
+        </p>
+        <div class="hero-actions">
+            <a href="#features" class="btn btn-primary">Explore Features</a>
+            <a href="#about" class="btn btn-outline">Learn More</a>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="section features" id="features">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-badge">Features</span>
+            <h2 class="section-title">What We Offer</h2>
+            <p class="section-subtitle">Powerful tools and solutions designed to accelerate your growth.</p>
+        </div>
+
+        <div class="features-grid">
+            <!-- Feature 1 -->
+            <div class="feature-card" data-animate="fade-up">
+                <div class="feature-icon">⚡</div>
+                <h3 class="feature-title">Lightning Fast</h3>
+                <p class="feature-text">
+                    Optimized performance that delivers content in milliseconds.
+                    Speed isn't a luxury — it's a standard.
+                </p>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="feature-card" data-animate="fade-up">
+                <div class="feature-icon">🛡️</div>
+                <h3 class="feature-title">Secure by Design</h3>
+                <p class="feature-text">
+                    Enterprise-grade security baked into every layer.
+                    Your data is protected at all times.
+                </p>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="feature-card" data-animate="fade-up">
+                <div class="feature-icon">📐</div>
+                <h3 class="feature-title">Modular Architecture</h3>
+                <p class="feature-text">
+                    Clean, extensible code structure that grows with
+                    your needs. Add features without breaking a thing.
+                </p>
+            </div>
+
+            <!-- Feature 4 -->
+            <div class="feature-card" data-animate="fade-up">
+                <div class="feature-icon">🎨</div>
+                <h3 class="feature-title">Beautiful Design</h3>
+                <p class="feature-text">
+                    Stunning interfaces that delight users and keep
+                    them coming back for more.
+                </p>
+            </div>
+
+            <!-- Feature 5 -->
+            <div class="feature-card" data-animate="fade-up">
+                <div class="feature-icon">🔄</div>
+                <h3 class="feature-title">Real-Time Updates</h3>
+                <p class="feature-text">
+                    Stay connected with instant data synchronization
+                    across all your devices and platforms.
+                </p>
+            </div>
+
+            <!-- Feature 6 -->
+            <div class="feature-card" data-animate="fade-up">
+                <div class="feature-icon">📊</div>
+                <h3 class="feature-title">Analytics Dashboard</h3>
+                <p class="feature-text">
+                    Deep insights into your metrics with rich
+                    visualizations and actionable intelligence.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section class="section about" id="about">
+    <div class="container">
+        <div class="about-grid">
+            <div class="about-content">
+                <span class="section-badge">About Us</span>
+                <h2 class="section-title">Driven by Innovation</h2>
+                <p class="about-text">
+                    At Qraynix, we believe that great technology should be accessible,
+                    powerful, and elegant. Our team is dedicated to creating solutions
+                    that not only meet today's challenges but anticipate tomorrow's needs.
+                </p>
+                <p class="about-text">
+                    We combine cutting-edge engineering with thoughtful design to deliver
+                    products that make a real difference in people's lives.
+                </p>
+                <div class="about-stats">
+                    <div class="stat">
+                        <span class="stat-number">99.9%</span>
+                        <span class="stat-label">Uptime</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">50K+</span>
+                        <span class="stat-label">Users</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">24/7</span>
+                        <span class="stat-label">Support</span>
+                    </div>
+                </div>
+            </div>
+            <div class="about-visual">
+                <div class="about-card-stack">
+                    <div class="about-floating-card about-floating-card--1">
+                        <span>🚀</span> Launch Ready
+                    </div>
+                    <div class="about-floating-card about-floating-card--2">
+                        <span>💡</span> Smart Solutions
+                    </div>
+                    <div class="about-floating-card about-floating-card--3">
+                        <span>🔒</span> Enterprise Secure
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact / CTA Section -->
+<section class="section cta" id="contact">
+    <div class="container">
+        <div class="cta-card">
+            <h2 class="cta-title">Ready to Get Started?</h2>
+            <p class="cta-text">
+                Join thousands of innovators who are already building the future with Qraynix.
+            </p>
+            <form class="cta-form" id="contact-form">
+                <div class="form-group">
+                    <input type="email" id="contact-email" class="form-input" placeholder="Enter your email" required
+                        aria-label="Email address">
+                    <button type="submit" class="btn btn-primary">Get Started</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>

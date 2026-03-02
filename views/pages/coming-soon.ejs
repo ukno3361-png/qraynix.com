@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Qraynix is launching soon. Stay tuned for something extraordinary.">
+    <meta name="theme-color" content="#0a0a1a">
+
+    <title>
+        <%= typeof title !=='undefined' ? title : 'Coming Soon | Qraynix' %>
+    </title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Coming Soon specific styles -->
+    <link rel="stylesheet" href="/css/coming-soon.css">
+</head>
+
+<body class="coming-soon-body">
+
+    <!-- Animated Background -->
+    <div class="cs-bg">
+        <div class="cs-gradient"></div>
+        <div class="cs-particles" id="cs-particles"></div>
+        <div class="cs-grid-overlay"></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="cs-wrapper">
+        <div class="cs-content">
+            <!-- Logo -->
+            <div class="cs-logo">
+                <span class="cs-logo-icon">◈</span>
+                <span class="cs-logo-text">Qraynix</span>
+            </div>
+
+            <!-- Heading -->
+            <h1 class="cs-title">
+                We're Coding Something
+                <span class="cs-gradient-text">Coming Soon</span>
+            </h1>
+
+            <p class="cs-subtitle">
+                We're crafting a digital experience that will redefine what's possible.
+                Be the first to know when we launch.
+            </p>
+
+            <!-- Email Signup -->
+            <form class="cs-form" id="cs-signup-form">
+                <div class="cs-form-group">
+                    <input type="email" id="cs-email" class="cs-input" placeholder="Enter your email address" required
+                        aria-label="Email address for launch notification">
+                    <button type="submit" class="cs-btn">Notify Me</button>
+                </div>
+                <p class="cs-form-note">No spam. We'll only email you once when we launch.</p>
+            </form>
+
+            <!-- Status Badges -->
+            <div class="cs-status">
+                <div class="cs-status-dot"></div>
+                <span>In Development</span>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="cs-footer">
+            <p>&copy; <%= new Date().getFullYear() %> Qraynix. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- Coming Soon Client JS -->
+    <script>
+        /**
+         * Coming Soon Page — Client-Side Logic
+         * Handles the email signup form and particle animation.
+         */
+
+        // --- Particle Animation ---
+        (function initParticles() {
+            const container = document.getElementById('cs-particles');
+            if (!container) return;
+
+            const PARTICLE_COUNT = 40;
+
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'cs-particle';
+                particle.style.cssText = [
+                    `left: ${Math.random() * 100}%`,
+                    `top: ${Math.random() * 100}%`,
+                    `width: ${Math.random() * 4 + 1}px`,
+                    `height: ${Math.random() * 4 + 1}px`,
+                    `animation-duration: ${Math.random() * 20 + 10}s`,
+                    `animation-delay: ${Math.random() * 10}s`,
+                    `opacity: ${Math.random() * 0.5 + 0.1}`,
+                ].join('; ');
+                container.appendChild(particle);
+            }
+        })();
+
+        // --- Email Signup Handler ---
+        (function initSignupForm() {
+            const form = document.getElementById('cs-signup-form');
+            if (!form) return;
+
+            form.addEventListener('submit', function handleSubmit(e) {
+                e.preventDefault();
+                const email = document.getElementById('cs-email').value;
+                const btn = form.querySelector('.cs-btn');
+
+                // Visual feedback
+                btn.textContent = '✓ Subscribed!';
+                btn.style.background = 'linear-gradient(135deg, #00c853, #00e676)';
+                btn.disabled = true;
+
+                // Reset after 3 seconds
+                setTimeout(() => {
+                    btn.textContent = 'Notify Me';
+                    btn.style.background = '';
+                    btn.disabled = false;
+                    form.reset();
+                }, 3000);
+            });
+        })();
+    </script>
+</body>
+
+</html>

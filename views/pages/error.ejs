@@ -1,0 +1,33 @@
+<!-- ============================================
+     Error Page
+     ============================================
+     Displays error information. In development,
+     shows the full stack trace.
+-->
+
+<!-- Hero-style error display -->
+<section class="error-page">
+    <div class="error-content">
+        <div class="error-code">
+            <%= typeof statusCode !=='undefined' ? statusCode : '500' %>
+        </div>
+        <h1 class="error-title">
+            <% if (typeof statusCode !=='undefined' && statusCode===404) { %>
+                Page Not Found
+                <% } else { %>
+                    Something Went Wrong
+                    <% } %>
+        </h1>
+        <p class="error-message">
+            <%= typeof message !=='undefined' ? message : 'An unexpected error occurred.' %>
+        </p>
+        <a href="/" class="btn btn-primary">Go Home</a>
+
+        <% if (typeof stack !=='undefined' && stack) { %>
+            <details class="error-details">
+                <summary>Stack Trace (dev only)</summary>
+                <pre class="error-stack"><%= stack %></pre>
+            </details>
+            <% } %>
+    </div>
+</section>

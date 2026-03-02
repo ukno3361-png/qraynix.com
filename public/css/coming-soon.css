@@ -1,0 +1,344 @@
+/**
+ * ============================================
+ * Coming Soon Page — Stylesheet
+ * ============================================
+ * Standalone styles for the coming soon page.
+ * Features an animated gradient background,
+ * floating particles, and glassmorphism card.
+ */
+
+/* ============================================
+   Base Reset (standalone — no main layout)
+   ============================================ */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+/* ============================================
+   Design Tokens
+   ============================================ */
+:root {
+    --cs-bg: #0a0a1a;
+    --cs-surface: rgba(26, 26, 62, 0.6);
+    --cs-border: rgba(108, 99, 255, 0.2);
+    --cs-text: #f0f0f8;
+    --cs-text-muted: #a0a0c0;
+    --cs-text-dim: #6e6e8e;
+    --cs-accent-1: #6c63ff;
+    --cs-accent-2: #00d4ff;
+    --cs-accent-3: #ff6b9d;
+    --cs-gradient: linear-gradient(135deg, #6c63ff 0%, #00d4ff 50%, #ff6b9d 100%);
+    --cs-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --cs-radius: 1rem;
+    --cs-blur: blur(20px);
+}
+
+/* ============================================
+   Page Body
+   ============================================ */
+.coming-soon-body {
+    font-family: var(--cs-font);
+    background: var(--cs-bg);
+    color: var(--cs-text);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================
+   Animated Background
+   ============================================ */
+.cs-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Animated gradient that slowly shifts */
+.cs-gradient {
+    position: absolute;
+    inset: -50%;
+    background: conic-gradient(from 0deg at 50% 50%,
+            var(--cs-accent-1),
+            var(--cs-accent-2),
+            var(--cs-accent-3),
+            var(--cs-accent-1));
+    opacity: 0.08;
+    animation: csRotate 30s linear infinite;
+}
+
+@keyframes csRotate {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Subtle dot grid overlay */
+.cs-grid-overlay {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(108, 99, 255, 0.08) 1px, transparent 1px);
+    background-size: 32px 32px;
+}
+
+/* ============================================
+   Floating Particles
+   ============================================ */
+.cs-particles {
+    position: absolute;
+    inset: 0;
+}
+
+.cs-particle {
+    position: absolute;
+    background: var(--cs-accent-2);
+    border-radius: 50%;
+    animation: csFloat linear infinite;
+}
+
+@keyframes csFloat {
+    0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 0.6;
+    }
+
+    90% {
+        opacity: 0.2;
+    }
+
+    100% {
+        transform: translateY(-100vh) translateX(40px);
+        opacity: 0;
+    }
+}
+
+/* ============================================
+   Main Wrapper
+   ============================================ */
+.cs-wrapper {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+/* ============================================
+   Content Card
+   ============================================ */
+.cs-content {
+    text-align: center;
+    max-width: 600px;
+    animation: csFadeIn 1s ease forwards;
+}
+
+@keyframes csFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Logo */
+.cs-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.cs-logo-icon {
+    font-size: 2.5rem;
+    background: var(--cs-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.cs-logo-text {
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+/* Title */
+.cs-title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.03em;
+}
+
+.cs-gradient-text {
+    background: var(--cs-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Subtitle */
+.cs-subtitle {
+    font-size: 1.1rem;
+    color: var(--cs-text-muted);
+    line-height: 1.7;
+    margin-bottom: 2.5rem;
+}
+
+/* ============================================
+   Email Signup Form
+   ============================================ */
+.cs-form {
+    margin-bottom: 2.5rem;
+}
+
+.cs-form-group {
+    display: flex;
+    gap: 0.5rem;
+    max-width: 440px;
+    margin: 0 auto;
+}
+
+.cs-input {
+    flex: 1;
+    padding: 0.875rem 1.25rem;
+    background: var(--cs-surface);
+    border: 1px solid var(--cs-border);
+    border-radius: var(--cs-radius);
+    color: var(--cs-text);
+    font-family: var(--cs-font);
+    font-size: 0.9rem;
+    outline: none;
+    backdrop-filter: var(--cs-blur);
+    transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.cs-input::placeholder {
+    color: var(--cs-text-dim);
+}
+
+.cs-input:focus {
+    border-color: var(--cs-accent-1);
+    box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.15);
+}
+
+.cs-btn {
+    padding: 0.875rem 1.75rem;
+    background: var(--cs-gradient);
+    color: #fff;
+    border: none;
+    border-radius: var(--cs-radius);
+    font-family: var(--cs-font);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: transform 150ms ease, box-shadow 250ms ease;
+    box-shadow: 0 4px 20px rgba(108, 99, 255, 0.3);
+}
+
+.cs-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 28px rgba(108, 99, 255, 0.45);
+}
+
+.cs-btn:active {
+    transform: translateY(0);
+}
+
+.cs-form-note {
+    margin-top: 0.75rem;
+    font-size: 0.75rem;
+    color: var(--cs-text-dim);
+}
+
+/* ============================================
+   Status Badge
+   ============================================ */
+.cs-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 1rem;
+    background: var(--cs-surface);
+    border: 1px solid var(--cs-border);
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    color: var(--cs-text-muted);
+    backdrop-filter: var(--cs-blur);
+}
+
+.cs-status-dot {
+    width: 8px;
+    height: 8px;
+    background: #00e676;
+    border-radius: 50%;
+    animation: csPulse 2s ease-in-out infinite;
+}
+
+@keyframes csPulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.5;
+        transform: scale(0.8);
+    }
+}
+
+/* ============================================
+   Footer
+   ============================================ */
+.cs-footer {
+    margin-top: auto;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.cs-footer p {
+    font-size: 0.75rem;
+    color: var(--cs-text-dim);
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 600px) {
+    .cs-form-group {
+        flex-direction: column;
+    }
+
+    .cs-btn {
+        width: 100%;
+    }
+
+    .cs-wrapper {
+        padding: 1.5rem;
+    }
+}
