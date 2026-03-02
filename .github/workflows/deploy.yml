@@ -21,7 +21,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             # Navigate to the project folder
-            cd /var/www/yourproject
+            cd /var/www/qraynix
             
             # Reset any local changes (important for automated deploys)
             git reset --hard
@@ -33,4 +33,4 @@ jobs:
             npm ci --production
             
             # Reload the app using PM2 (zero downtime reload)
-            pm2 reload my-website
+            pm2 reload website
