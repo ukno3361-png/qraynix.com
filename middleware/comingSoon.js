@@ -51,7 +51,7 @@ const createComingSoonMiddleware = (appState) => (req, res, next) => {
 
     // If coming soon mode is active, show the coming soon page
     if (appState.comingSoon) {
-        return res.status(503).render('pages/coming-soon', {
+        return res.status(200).render('pages/coming-soon', {
             title: 'Coming Soon | Qraynix',
             layout: false, // Coming soon page uses its own full layout
         });
