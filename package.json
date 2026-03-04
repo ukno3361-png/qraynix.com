@@ -1,7 +1,7 @@
 {
     "name": "qraynix",
     "version": "1.0.0",
-    "description": "Qraynix — A personal journal & portfolio platform with Norse-inspired aesthetics",
+    "description": "",
     "main": "server/index.js",
     "scripts": {
         "start": "node server/index.js",
