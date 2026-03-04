@@ -1,0 +1,31 @@
+<%# Footer partial — site footer with rune motif %>
+    <footer class="site-footer">
+        <div class="container">
+            <span class="footer-rune">ᛟ</span>
+            <p>
+                <%= typeof settings !=='undefined' && settings.footer_text ? settings.footer_text
+                    : '© Qraynix. All rights reserved.' %>
+            </p>
+            <% if (typeof settings !=='undefined' ) { %>
+                <div style="margin-top: 1rem; display: flex; justify-content: center; gap: 1.5rem;">
+                    <% if (settings.social_github) { %><a href="<%= settings.social_github %>" target="_blank"
+                            rel="noopener">GitHub</a>
+                        <% } %>
+                            <% if (settings.social_twitter) { %><a href="<%= settings.social_twitter %>" target="_blank"
+                                    rel="noopener">Twitter</a>
+                                <% } %>
+                                    <% if (settings.social_mastodon) { %><a href="<%= settings.social_mastodon %>"
+                                            target="_blank" rel="noopener">Mastodon</a>
+                                        <% } %>
+                                            <% if (settings.social_instagram) { %><a
+                                                    href="<%= settings.social_instagram %>" target="_blank"
+                                                    rel="noopener">Instagram</a>
+                                                <% } %>
+                                                    <% if (settings.social_linkedin) { %><a
+                                                            href="<%= settings.social_linkedin %>" target="_blank"
+                                                            rel="noopener">LinkedIn</a>
+                                                        <% } %>
+                </div>
+                <% } %>
+        </div>
+    </footer>

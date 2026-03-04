@@ -1,0 +1,75 @@
+<%# Single Entry Page %>
+    <% const RUNES='ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛞᛟ' ; %>
+
+        <%# Reading Progress Bar %>
+            <div class="reading-progress" id="reading-progress" style="width: 0%;"></div>
+
+            <%# Hero %>
+                <div class="entry-hero"
+                    style="<%= entry.cover_image ? 'background-image: url(' + entry.cover_image + ')' : '' %>">
+                    <div class="entry-hero-inner">
+                        <div class="tags-row" style="margin-bottom: 1rem;">
+                            <% (entry.tags || []).forEach(tag=> { %>
+                                <a href="/?tag=<%= tag.slug %>" class="tag-chip">
+                                    <%= tag.name %>
+                                </a>
+                                <% }) %>
+                        </div>
+                        <h1 class="entry-hero-title">
+                            <%= entry.title %>
+                        </h1>
+                        <div class="entry-meta" style="margin-top: 1rem;">
+                            <span class="entry-date">
+                                <%= formatRunicDate(entry.published_at || entry.created_at) %>
+                            </span>
+                            <% if (entry.read_time) { %><span>~<%= entry.read_time %> min read</span>
+                                <% } %>
+                                    <% if (entry.word_count) { %><span>
+                                            <%= entry.word_count.toLocaleString() %> words
+                                        </span>
+                                        <% } %>
+                                            <% if (entry.mood) { %><span>
+                                                    <%= entry.mood %>
+                                                </span>
+                                                <% } %>
+                                                    <% if (entry.location) { %><span>📍 <%= entry.location %></span>
+                                                        <% } %>
+                        </div>
+                    </div>
+                </div>
+
+                <%# Content %>
+                    <style>
+                        #entry-content {
+                            opacity: 0;
+                        }
+                    </style>
+                    <article class="entry-content" id="entry-content">
+                        <%- entry.content_html || entry.content %>
+                    </article>
+
+                    <%# Back to top %>
+                        <script>
+                            // Reading progress bar
+                            const progressBar = document.getElementById('reading-progress');
+                            const content = document.getElementById('entry-content');
+                            if (progressBar && content) {
+                                window.addEventListener('scroll', () => {
+                                    const rect = content.getBoundingClientRect();
+                                    const total = content.scrollHeight;
+                                    const scrolled = Math.max(0, -rect.top);
+                                    const pct = Math.min(100, (scrolled / (total - window.innerHeight)) * 100);
+                                    progressBar.style.width = pct + '%';
+                                });
+                            }
+                        </script>
+
+                        <%# Typing Simulator %>
+                            <script src="/js/typing.js"></script>
+                            <script>
+                                window.addEventListener('DOMContentLoaded', () => {
+                                    if (window.naturalTyping) {
+                                        window.naturalTyping('#entry-content', true);
+                                    }
+                                });
+                            </script>

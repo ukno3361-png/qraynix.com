@@ -1,36 +1,18 @@
-name: Deploy to DigitalOcean
+name: Internal Deploy
 
 on:
   push:
     branches:
-      - main # Or 'master' - the branch you want to deploy from
+      - main
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
-
+    runs-on: self-hosted
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      - name: Deploy to Server via SSH
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            # Navigate to the project folder
-            cd var/www/qraynix.com
-            
-            # Reset any local changes (important for automated deploys)
-            git reset --hard
-            
-            # Pull latest changes
-            git pull origin main
-            
-            # Install dependencies (use ci for faster, cleaner production installs)
-            npm ci --production
-            
-            # Reload the app using PM2 (zero downtime reload)
-            pm2 reload website
+      - name: Deploy to Production
+        run: |
+          cd /root/var/www/qraynix.com
+          git pull origin main
+          npm install --production
+          npm run build
+          pm2 reload qraynix

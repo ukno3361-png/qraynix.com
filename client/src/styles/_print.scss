@@ -1,0 +1,35 @@
+// ── Print Styles ──
+@media print {
+    body {
+        background: white !important;
+        color: black !important;
+    }
+
+    .site-header,
+    .site-footer,
+    .rune-bg,
+    .scroll-top,
+    .btn,
+    .nav-links,
+    .mobile-toggle,
+    .timeline-filters {
+        display: none !important;
+    }
+
+    .container,
+    .page-content {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+    }
+
+    a {
+        color: black !important;
+        text-decoration: underline;
+    }
+
+    .entry-content {
+        max-width: 100% !important;
+        padding: 0 !important;
+    }
+}

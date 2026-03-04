@@ -1,0 +1,39 @@
+<%# EJS Partial: entryCard — reusable card for entry listings %>
+    <% const RUNES='ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛞᛟ' ; %>
+        <a href="/entry/<%= entry.slug %>" class="entry-card fade-in">
+            <% if (entry.cover_image) { %>
+                <img src="<%= entry.cover_image %>" alt="<%= entry.title %>" class="entry-cover" loading="lazy">
+                <% } %>
+                    <span class="entry-rune">
+                        <%= RUNES[entry.id % RUNES.length] %>
+                    </span>
+                    <div class="entry-body">
+                        <h3 class="entry-title">
+                            <%= entry.title %>
+                        </h3>
+                        <% if (entry.excerpt) { %>
+                            <p class="entry-excerpt">
+                                <%= entry.excerpt.substring(0, 160) %>
+                            </p>
+                            <% } %>
+                                <div class="tags-row">
+                                    <% (entry.tags || []).forEach(tag=> { %>
+                                        <span class="tag-chip">
+                                            <%= tag.name %>
+                                        </span>
+                                        <% }) %>
+                                </div>
+                                <div class="entry-meta">
+                                    <span class="entry-date">
+                                        <%= typeof formatRunicDate==='function' ? formatRunicDate(entry.published_at ||
+                                            entry.created_at) : '' %>
+                                    </span>
+                                    <% if (entry.read_time) { %><span>~<%= entry.read_time %> min read</span>
+                                        <% } %>
+                                            <% if (entry.mood) { %><span>
+                                                    <%= entry.mood %>
+                                                </span>
+                                                <% } %>
+                                </div>
+                    </div>
+        </a>

@@ -1,0 +1,112 @@
+<%# Login / Setup Page — standalone (no layout) %>
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>
+            <%= title %>
+        </title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:wght@400;500&family=Inter:wght@400;500;600&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="/css/main.css">
+    </head>
+
+    <body>
+        <div class="rune-bg" id="rune-bg"></div>
+
+        <div class="login-page">
+            <div class="login-card">
+                <div class="login-logo">
+                    <span
+                        style="font-size: 2.5rem; color: #c9a84c; animation: runeGlow 4s ease-in-out infinite;">◈</span>
+                </div>
+                <h1 class="login-title">
+                    <%= hasAdmin ? 'Welcome Back' : 'Create Admin Account' %>
+                </h1>
+                <% if (!hasAdmin) { %>
+                    <p class="login-subtitle">Set up your first account to get started</p>
+                    <% } %>
+
+                        <div id="form-error" class="form-error"></div>
+
+                        <form id="auth-form">
+                            <% if (!hasAdmin) { %>
+                                <div class="form-group">
+                                    <label class="form-label" for="username">Username</label>
+                                    <input class="form-input" type="text" id="username" name="username" required
+                                        autocomplete="username">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="email">Email</label>
+                                    <input class="form-input" type="email" id="email" name="email" required
+                                        autocomplete="email">
+                                </div>
+                                <% } else { %>
+                                    <div class="form-group">
+                                        <label class="form-label" for="identifier">Username or Email</label>
+                                        <input class="form-input" type="text" id="identifier" name="identifier" required
+                                            autocomplete="username">
+                                    </div>
+                                    <% } %>
+                                        <div class="form-group">
+                                            <label class="form-label" for="password">Password</label>
+                                            <input class="form-input" type="password" id="password" name="password"
+                                                required
+                                                autocomplete="<%= hasAdmin ? 'current-password' : 'new-password' %>">
+                                        </div>
+                                        <button type="submit" class="btn btn-primary btn-full" id="submit-btn">
+                                            <%= hasAdmin ? 'Sign In' : 'Create Account' %>
+                                        </button>
+                        </form>
+            </div>
+        </div>
+
+        <script src="/js/main.js"></script>
+        <script>
+            const HAS_ADMIN = <%= hasAdmin %>;
+
+            async function handleAuth(e) {
+                e.preventDefault();
+                const btn = document.getElementById('submit-btn');
+                const errorEl = document.getElementById('form-error');
+                errorEl.style.display = 'none';
+                btn.disabled = true;
+                btn.textContent = HAS_ADMIN ? 'Signing in...' : 'Creating account...';
+
+                try {
+                    const endpoint = HAS_ADMIN ? '/auth/login' : '/auth/signup';
+                    const body = HAS_ADMIN
+                        ? { identifier: document.getElementById('identifier').value, password: document.getElementById('password').value }
+                        : { username: document.getElementById('username').value, email: document.getElementById('email').value, password: document.getElementById('password').value };
+
+                    const res = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(body),
+                    });
+
+                    const data = await res.json();
+
+                    if (!res.ok) {
+                        throw new Error(data.error?.message || 'Authentication failed');
+                    }
+
+                    window.location.href = '/admin';
+                } catch (err) {
+                    errorEl.textContent = err.message;
+                    errorEl.style.display = 'block';
+                    btn.disabled = false;
+                    btn.textContent = HAS_ADMIN ? 'Sign In' : 'Create Account';
+                }
+            }
+
+            document.getElementById('auth-form').addEventListener('submit', handleAuth);
+        </script>
+    </body>
+
+    </html>

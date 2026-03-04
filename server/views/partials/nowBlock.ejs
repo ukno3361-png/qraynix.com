@@ -1,0 +1,16 @@
+<%# EJS Partial: nowBlock — a single "Now" content block %>
+    <div class="now-block fade-in <%= typeof isLatest !== 'undefined' && isLatest ? 'latest' : '' %>">
+        <% if (block.icon) { %><span class="now-icon">
+                <%= block.icon %>
+            </span>
+            <% } %>
+                <h3 class="now-title">
+                    <%= block.title %>
+                        <% if (typeof isLatest !=='undefined' && isLatest) { %>
+                            <span class="latest-badge">Latest</span>
+                            <% } %>
+                </h3>
+                <p class="now-content">
+                    <%= block.content %>
+                </p>
+    </div>

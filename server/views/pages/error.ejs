@@ -1,0 +1,18 @@
+<%# Error Page (404/500) — uses the base layout %>
+    <div class="error-page">
+        <div class="error-code">
+            <%= statusCode || 404 %>
+        </div>
+        <p class="error-message">
+            <% if (statusCode===404) { %>
+                The page you seek has faded from the stones.
+                <% } else { %>
+                    <%= message || 'Something went wrong' %>
+                        <% } %>
+        </p>
+        <a href="/" class="btn btn-primary">Return Home</a>
+        <% if (typeof stack !=='undefined' && stack) { %>
+            <pre
+                style="margin-top: 2rem; padding: 1rem; background: #0a0907; border-radius: 8px; font-size: 0.75rem; color: #9c9280; max-width: 600px; overflow-x: auto; text-align: left;"><%= stack %></pre>
+            <% } %>
+    </div>

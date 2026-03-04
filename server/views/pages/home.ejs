@@ -1,0 +1,52 @@
+<%# Homepage — entry list + Now section %>
+    <section class="hero">
+        <h1 class="hero-title">
+            <%= settings.site_title || 'Qraynix' %>
+        </h1>
+        <p class="hero-subtitle">
+            <%= settings.description || 'Personal journal & portfolio' %>
+        </p>
+    </section>
+
+    <div class="container">
+        <%# Now Section %>
+            <% if (nowBlocks && nowBlocks.length> 0) { %>
+                <h2 class="section-heading">What I'm Doing Now</h2>
+                <div class="now-grid">
+                    <% nowBlocks.forEach((block, index)=> { %>
+                        <%- include('../partials/nowBlock', { block, isLatest: index===0 }) %>
+                            <% }) %>
+                </div>
+                <% } %>
+
+                    <%# Journal Entries %>
+                        <% if (entries && entries.length> 0) { %>
+                            <h2 class="section-heading">Journal</h2>
+                            <div class="entries-grid">
+                                <% entries.forEach(entry=> { %>
+                                    <%- include('../partials/entryCard', { entry, formatRunicDate }) %>
+                                        <% }) %>
+                            </div>
+
+                            <%# Pagination %>
+                                <% if (pagination && pagination.totalPages> 1) { %>
+                                    <div class="pagination">
+                                        <a href="?page=<%= pagination.page - 1 %>"
+                                            class="page-btn <%= pagination.hasPrev ? '' : 'disabled' %>">← Previous</a>
+                                        <span
+                                            style="color: #5c5548; font-family: 'Inter', sans-serif; font-size: 0.85rem; align-self: center;">
+                                            Page <%= pagination.page %> of <%= pagination.totalPages %>
+                                        </span>
+                                        <a href="?page=<%= pagination.page + 1 %>"
+                                            class="page-btn <%= pagination.hasNext ? '' : 'disabled' %>">Next →</a>
+                                    </div>
+                                    <% } %>
+                                        <% } else { %>
+                                            <div style="text-align: center; padding: 4rem 2rem; color: #5c5548;">
+                                                <p
+                                                    style="font-family: 'Cinzel', serif; font-size: 1.3rem; margin-bottom: 0.5rem;">
+                                                    The pages are empty</p>
+                                                <p>No entries have been published yet.</p>
+                                            </div>
+                                            <% } %>
+    </div>

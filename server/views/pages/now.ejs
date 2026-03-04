@@ -1,0 +1,21 @@
+<%# Now Page — dedicated page listing all visible now_blocks %>
+    <div class="container">
+        <h1 class="section-heading">What I'm Doing Now</h1>
+
+        <% if (blocks && blocks.length> 0) { %>
+            <div class="now-grid">
+                <% blocks.forEach(block=> { %>
+                    <%- include('../partials/nowBlock', { block }) %>
+                        <% }) %>
+            </div>
+            <p
+                style="text-align: center; color: #5c5548; margin-top: 2rem; font-size: 0.85rem; font-family: 'Inter', sans-serif;">
+                Last updated: <%= blocks[0] ? new Date(blocks[0].updated_at).toLocaleDateString('en-US', { month: 'long'
+                    , day: 'numeric' , year: 'numeric' }) : '' %>
+            </p>
+            <% } else { %>
+                <div style="text-align: center; padding: 4rem; color: #5c5548;">
+                    <p style="font-family: 'Cinzel', serif; font-size: 1.2rem;">Nothing here yet</p>
+                </div>
+                <% } %>
+    </div>

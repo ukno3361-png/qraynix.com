@@ -1,0 +1,55 @@
+// Mixins — reusable SCSS patterns
+@use 'variables' as *;
+
+@mixin runeGlow {
+    animation: runeGlow 4s ease-in-out infinite;
+    color: $color-accent;
+}
+
+@mixin textGlow($color: $color-accent) {
+    text-shadow: 0 0 10px rgba($color, 0.5), 0 0 30px rgba($color, 0.25);
+}
+
+@mixin cardSurface {
+    background: $color-bg-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+
+    &:hover {
+        border-color: $color-border-glow;
+        box-shadow: $shadow-glow;
+        transform: translateY(-3px);
+    }
+}
+
+@mixin glowBorder {
+    border: 1px solid rgba($color-accent, 0.3);
+    box-shadow: 0 0 15px rgba($color-accent, 0.1),
+        inset 0 0 15px rgba($color-accent, 0.05);
+}
+
+@mixin focusRing {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba($color-accent, 0.4);
+}
+
+@mixin respond($bp) {
+    @if $bp ==mobile {
+        @media (max-width: $bp-mobile) {
+            @content;
+        }
+    }
+
+    @else if $bp ==tablet {
+        @media (max-width: $bp-tablet) {
+            @content;
+        }
+    }
+
+    @else if $bp ==desktop {
+        @media (max-width: $bp-desktop) {
+            @content;
+        }
+    }
+}

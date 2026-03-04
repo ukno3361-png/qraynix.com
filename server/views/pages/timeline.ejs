@@ -1,0 +1,50 @@
+<%# Timeline Page %>
+    <div class="container">
+        <h1 class="section-heading">Timeline</h1>
+
+        <%# Category Filters %>
+            <div class="timeline-filters" id="timeline-filters">
+                <button class="filter-btn <%= category === 'all' ? 'active' : '' %>" data-filter="all">All</button>
+                <button class="filter-btn <%= category === 'life' ? 'active' : '' %>" data-filter="life">Life</button>
+                <button class="filter-btn <%= category === 'work' ? 'active' : '' %>" data-filter="work">Work</button>
+                <button class="filter-btn <%= category === 'travel' ? 'active' : '' %>"
+                    data-filter="travel">Travel</button>
+                <button class="filter-btn <%= category === 'creative' ? 'active' : '' %>"
+                    data-filter="creative">Creative</button>
+            </div>
+
+            <%# Timeline %>
+                <% if (events && events.length> 0) { %>
+                    <div class="timeline" id="timeline">
+                        <% events.forEach(event=> { %>
+                            <%- include('../partials/timelineEvent', { event, formatRunicDate }) %>
+                                <% }) %>
+                    </div>
+                    <% } else { %>
+                        <div style="text-align: center; padding: 4rem; color: #5c5548;">
+                            <p style="font-family: 'Cinzel', serif; font-size: 1.2rem;">No events recorded yet</p>
+                        </div>
+                        <% } %>
+    </div>
+
+    <script>
+        // Client-side category filtering
+        document.getElementById('timeline-filters').addEventListener('click', (e) => {
+            if (!e.target.classList.contains('filter-btn')) return;
+
+            const cat = e.target.dataset.filter;
+            const events = document.querySelectorAll('.timeline-event');
+            const buttons = document.querySelectorAll('.filter-btn');
+
+            buttons.forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+
+            events.forEach(el => {
+                if (cat === 'all' || el.dataset.category === cat) {
+                    el.style.display = '';
+                } else {
+                    el.style.display = 'none';
+                }
+            });
+        });
+    </script>

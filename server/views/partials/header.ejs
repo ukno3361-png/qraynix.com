@@ -1,0 +1,36 @@
+<%# Header partial — sticky header with glowing rune logo and nav %>
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="/" class="site-logo">
+                <span class="logo-rune">◈</span>
+                <span>
+                    <%= typeof settings !=='undefined' && settings.site_title ? settings.site_title : 'Qraynix' %>
+                </span>
+            </a>
+
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="/"
+                            class="<%= typeof currentPath !== 'undefined' && currentPath === '/' ? 'active' : '' %>">Home</a>
+                    </li>
+                    <% if (typeof settings==='undefined' || settings.show_timeline !=='false' ) { %>
+                        <li><a href="/timeline"
+                                class="<%= typeof currentPath !== 'undefined' && currentPath === '/timeline' ? 'active' : '' %>">Timeline</a>
+                        </li>
+                        <% } %>
+                            <% if (typeof settings==='undefined' || settings.show_now !=='false' ) { %>
+                                <li><a href="/now"
+                                        class="<%= typeof currentPath !== 'undefined' && currentPath === '/now' ? 'active' : '' %>">Now</a>
+                                </li>
+                                <% } %>
+                                    <% if (typeof currentUser !=='undefined' && currentUser) { %>
+                                        <li><a href="/admin">Dashboard</a></li>
+                                        <% } else { %>
+                                            <li><a href="/login">Login</a></li>
+                                            <% } %>
+                </ul>
+            </nav>
+
+            <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle navigation">☰</button>
+        </div>
+    </header>

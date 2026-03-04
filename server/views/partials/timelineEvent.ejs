@@ -1,0 +1,27 @@
+<%# EJS Partial: timelineEvent — a single event on the timeline %>
+    <div class="timeline-event fade-in" data-category="<%= event.category %>">
+        <div class="timeline-node" style="border-color: <%= event.color || '#c9a84c' %>">
+            <span>
+                <%= event.icon || 'ᚱ' %>
+            </span>
+        </div>
+        <div class="timeline-card">
+            <span class="timeline-date">
+                <%= typeof formatRunicDate==='function' ? formatRunicDate(event.event_date) : event.event_date %>
+            </span>
+            <h3 class="timeline-title">
+                <%= event.title %>
+            </h3>
+            <% if (event.description) { %>
+                <p class="timeline-desc">
+                    <%= event.description %>
+                </p>
+                <% } %>
+                    <% if (event.link_url) { %>
+                        <a href="<%= event.link_url %>" class="tag-chip"
+                            style="margin-top: 0.8rem; display: inline-block;">
+                            <%= event.link_label || 'Learn more' %>
+                        </a>
+                        <% } %>
+        </div>
+    </div>
