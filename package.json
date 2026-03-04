@@ -2,10 +2,10 @@
     "name": "qraynix",
     "version": "1.0.0",
     "description": "",
-    "main": "server/index.js",
+    "main": "app.js",
     "scripts": {
-        "start": "node server/index.js",
-        "dev": "nodemon server/index.js",
+        "start": "node app.js",
+        "dev": "nodemon app.js",
         "build:css": "node scripts/build-css.js",
         "watch:css": "node scripts/watch-css.js",
         "build:admin": "vite build --config client/vite.config.js",

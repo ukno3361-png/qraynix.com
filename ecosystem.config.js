@@ -5,7 +5,7 @@
 module.exports = {
     apps: [{
         name: 'qraynix',
-        script: 'server/index.js',
+        script: 'app.js',
         instances: 1,
         autorestart: true,
         watch: false,
