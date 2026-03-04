@@ -11,8 +11,19 @@ jobs:
     steps:
       - name: Deploy to Production
         run: |
-          cd /root/var/www/qraynix.com
-          git pull origin main
-          npm install --production
+          # 1. Navigate to the directory
+          cd var/www/qraynix.com
+          
+          # 2. Reset and pull to ensure no local file conflicts from the "wipe"
+          git fetch --all
+          git reset --hard origin/main
+          
+          # 3. Clean install to match the new package-lock.json exactly
+          npm ci --production
+          
+          # 4. Build the new code
           npm run build
-          pm2 reload qraynix
+          
+          # 5. Reload or Restart
+          # Use 'restart' if the entry point file name changed (e.g., app.js to index.js)
+          pm2 restart qraynix --update-env
