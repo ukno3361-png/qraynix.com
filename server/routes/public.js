@@ -8,36 +8,6 @@ const { Router } = require('express');
 const { formatRunicDate } = require('../utils/dateFormat');
 const { sanitizeHtml } = require('../utils/sanitize');
 
-const PLACEHOLDER_FLASHES = [
-    {
-        id: 'ph-1',
-        media_type: 'image',
-        media_url: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="900" height="560"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%25" stop-color="%23111215"/><stop offset="100%25" stop-color="%23242a3f"/></linearGradient></defs><rect width="100%25" height="100%25" fill="url(%23g)"/><text x="50%25" y="54%25" fill="%23b19bcf" text-anchor="middle" font-size="52" font-family="serif">Placeholder I</text></svg>',
-        preview_text: 'A still horizon and static hum in my head.',
-        thought_text: 'Testing thought modal layout with a short reflection.',
-    },
-    {
-        id: 'ph-2',
-        media_type: 'image',
-        media_url: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="700" height="980"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0%25" stop-color="%2310151b"/><stop offset="100%25" stop-color="%23313454"/></linearGradient></defs><rect width="100%25" height="100%25" fill="url(%23g)"/><circle cx="50%25" cy="42%25" r="110" fill="%23b19bcf" fill-opacity="0.22"/><text x="50%25" y="80%25" fill="%23d1c2e8" text-anchor="middle" font-size="44" font-family="serif">Placeholder II</text></svg>',
-        preview_text: 'Night thoughts stacked like vertical windows.',
-        thought_text: 'Another placeholder to validate variable card heights.',
-    },
-    {
-        id: 'ph-3',
-        media_type: 'image',
-        media_url: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="620"><defs><linearGradient id="g" x1="0" y1="1" x2="1" y2="0"><stop offset="0%25" stop-color="%23101011"/><stop offset="100%25" stop-color="%23424d7a"/></linearGradient></defs><rect width="100%25" height="100%25" fill="url(%23g)"/><path d="M0 430 Q240 300 500 420 T1000 390 V620 H0Z" fill="%23b19bcf" fill-opacity="0.18"/><text x="50%25" y="52%25" fill="%23efe9fb" text-anchor="middle" font-size="54" font-family="serif">Placeholder III</text></svg>',
-        preview_text: 'Cloud trails and unfinished sentences.',
-        thought_text: 'Use this placeholder for wide media-card behavior.',
-    },
-    {
-        id: 'ph-4',
-        media_type: 'image',
-        media_url: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="760" height="760"><defs><radialGradient id="g" cx="50%25" cy="45%25" r="70%25"><stop offset="0%25" stop-color="%2340496e"/><stop offset="100%25" stop-color="%230c0d10"/></radialGradient></defs><rect width="100%25" height="100%25" fill="url(%23g)"/><text x="50%25" y="55%25" fill="%23d7caee" text-anchor="middle" font-size="48" font-family="serif">Placeholder IV</text></svg>',
-        preview_text: 'Circular echoes in a square room.',
-        thought_text: 'A balanced square asset for responsive-grid testing.',
-    },
-];
 
 /**
  * createPublicRouter — factory for public page routes.
@@ -234,9 +204,7 @@ const createPublicRouter = (services) => {
     router.get('/thought-flash', (req, res) => {
         const settings = services.settings.getAll();
         const items = services.thoughtFlash.list({ includeHidden: false, offset: 0, limit: 12 });
-        const usePlaceholders = items.length === 0;
-
-        const prepared = (usePlaceholders ? PLACEHOLDER_FLASHES : items).map((item) => ({
+        const prepared = items.map((item) => ({
             ...item,
             preview_text: sanitizeHtml(String(item.preview_text || '')),
             thought_text: sanitizeHtml(String(item.thought_text || '').replace(/\r?\n/g, '<br>')),
@@ -246,7 +214,7 @@ const createPublicRouter = (services) => {
             title: `Thought Flash | ${settings.site_title}`,
             settings,
             items: prepared,
-            usePlaceholders,
+            usePlaceholders: false,
         });
     });
 

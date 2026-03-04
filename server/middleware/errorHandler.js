@@ -21,6 +21,7 @@ const createNotFoundHandler = () => (req, res, next) => {
  */
 const createErrorHandler = (isDev) => (err, req, res, _next) => {
     const status = err.status || 500;
+    const routePath = String(req.originalUrl || req.baseUrl || req.path || '');
 
     if (isDev) {
         console.error(`[ERROR] ${status} — ${err.message}`);
@@ -28,7 +29,7 @@ const createErrorHandler = (isDev) => (err, req, res, _next) => {
     }
 
     // API and Auth routes get JSON
-    if (req.path.startsWith('/api/') || req.path.startsWith('/auth/')) {
+    if (routePath.startsWith('/api/') || routePath.startsWith('/auth/')) {
         return res.status(status).json({
             error: {
                 message: err.message || 'Internal server error',

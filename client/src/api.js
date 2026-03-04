@@ -32,10 +32,29 @@ const request = async (url, options = {}) => {
         throw new Error('Session expired');
     }
 
-    const data = await res.json();
+    const contentType = String(res.headers.get('content-type') || '').toLowerCase();
+    const rawText = await res.text();
+    let data = null;
+
+    if (rawText) {
+        try {
+            data = JSON.parse(rawText);
+        } catch (_err) {
+            data = null;
+        }
+    }
 
     if (!res.ok) {
-        throw new Error(data.error?.message || `Request failed (${res.status})`);
+        const serverMessage = data?.error?.message || data?.message;
+        if (serverMessage) throw new Error(serverMessage);
+        if (contentType.includes('text/html')) {
+            throw new Error(`Request failed (${res.status}) — server returned HTML instead of JSON`);
+        }
+        throw new Error(`Request failed (${res.status})`);
+    }
+
+    if (data === null && rawText) {
+        throw new Error('Server returned an unexpected non-JSON response');
     }
 
     return data;

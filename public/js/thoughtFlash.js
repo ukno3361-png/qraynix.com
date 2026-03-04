@@ -181,7 +181,7 @@
     renderItems(items);
 
     if (!hasMore) {
-        loader.textContent = payload.usePlaceholders ? 'Showing placeholder thoughts.' : 'No more thoughts.';
+        loader.textContent = items.length === 0 ? 'No thoughts yet.' : 'No more thoughts.';
         loader.classList.add('show');
     }
 
