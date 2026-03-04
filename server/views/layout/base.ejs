@@ -46,6 +46,15 @@
 
             <!-- Public JS -->
             <script src="/js/main.js"></script>
+            <script>
+                window.__AI_CHAT_CONFIG__ = {
+                    enabled: <%- JSON.stringify(typeof settings !== 'undefined' ? settings.ai_chat_enabled !== 'false' : true) %>,
+                    botName: <%- JSON.stringify(typeof settings !== 'undefined' && settings.ai_chat_bot_name ? settings.ai_chat_bot_name : 'Site Bot') %>,
+                    ownerName: <%- JSON.stringify(typeof settings !== 'undefined' && settings.ai_chat_owner_name ? settings.ai_chat_owner_name : ((typeof settings !== 'undefined' && settings.site_title) ? settings.site_title : 'Site Owner')) %>,
+                    disclaimer: <%- JSON.stringify(typeof settings !== 'undefined' && settings.ai_chat_disclaimer ? settings.ai_chat_disclaimer : '') %>
+                };
+            </script>
+            <script src="/js/aiChatWidget.js"></script>
 </body>
 
 </html>

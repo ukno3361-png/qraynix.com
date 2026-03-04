@@ -4,6 +4,7 @@
  */
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext.jsx';
 import { ToastProvider } from './context/ToastContext.jsx';
 import AdminLayout from './components/AdminLayout.jsx';
@@ -14,13 +15,25 @@ const EntriesList = React.lazy(() => import('./pages/EntriesList.jsx'));
 const EntryEditor = React.lazy(() => import('./pages/EntryEditor.jsx'));
 const TimelineManager = React.lazy(() => import('./pages/TimelineManager.jsx'));
 const NowEditor = React.lazy(() => import('./pages/NowEditor.jsx'));
+const HabitTracker = React.lazy(() => import('./pages/HabitTracker.jsx'));
+const MusicManager = React.lazy(() => import('./pages/MusicManager.jsx'));
+const ThoughtFlashManager = React.lazy(() => import('./pages/ThoughtFlashManager.jsx'));
+const LiveCamSettings = React.lazy(() => import('./pages/LiveCamSettings.jsx'));
+const FutureEditor = React.lazy(() => import('./pages/FutureEditor.jsx'));
+const HealthEditor = React.lazy(() => import('./pages/HealthEditor.jsx'));
 const MediaLibrary = React.lazy(() => import('./pages/MediaLibrary.jsx'));
 const SiteSettings = React.lazy(() => import('./pages/SiteSettings.jsx'));
+const AIBotSettings = React.lazy(() => import('./pages/AIBotSettings.jsx'));
 const AccountPage = React.lazy(() => import('./pages/AccountPage.jsx'));
 const Analytics = React.lazy(() => import('./pages/Analytics.jsx'));
 
 function AppContent() {
-    const { loading } = useAuth();
+    const { user, loading, refreshAuth } = useAuth();
+    const location = useLocation();
+
+    React.useEffect(() => {
+        refreshAuth();
+    }, [location.pathname, refreshAuth]);
 
     if (loading) {
         return (
@@ -29,6 +42,10 @@ function AppContent() {
                 <span>Loading...</span>
             </div>
         );
+    }
+
+    if (!user) {
+        return <Navigate to="/login" replace />;
     }
 
     return (
@@ -41,8 +58,15 @@ function AppContent() {
                     <Route path="entries/:id/edit" element={<EntryEditor />} />
                     <Route path="timeline" element={<TimelineManager />} />
                     <Route path="now" element={<NowEditor />} />
+                    <Route path="habits" element={<HabitTracker />} />
+                    <Route path="music" element={<MusicManager />} />
+                    <Route path="thought-flash" element={<ThoughtFlashManager />} />
+                    <Route path="live-cam" element={<LiveCamSettings />} />
+                    <Route path="future" element={<FutureEditor />} />
+                    <Route path="health" element={<HealthEditor />} />
                     <Route path="media" element={<MediaLibrary />} />
                     <Route path="settings" element={<SiteSettings />} />
+                    <Route path="ai-bot" element={<AIBotSettings />} />
                     <Route path="account" element={<AccountPage />} />
                     <Route path="analytics" element={<Analytics />} />
                 </Route>

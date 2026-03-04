@@ -1,0 +1,24 @@
+<%# Thought Flash Page — infinite grid of random thought cards %>
+<div class="container thought-flash-page">
+    <h1 class="section-heading">Random Thought Flash</h1>
+    <p class="thought-flash-sub">Fragments of passing thoughts, collected in media snapshots.</p>
+
+    <script id="thought-flash-init" type="application/json"><%- JSON.stringify({ items, usePlaceholders }).replace(/</g, '\\u003c') %></script>
+
+    <div id="thought-flash-grid" class="thought-grid"></div>
+    <div id="thought-flash-loader" class="thought-loader">Loading more thoughts...</div>
+</div>
+
+<div id="thought-modal" class="thought-modal" aria-hidden="true">
+    <div class="thought-modal-backdrop" data-close="1"></div>
+    <div class="thought-modal-content" role="dialog" aria-modal="true" aria-label="Thought details">
+        <button class="thought-modal-close" id="thought-modal-close" type="button">✕</button>
+        <div id="thought-modal-media"></div>
+        <section class="thought-modal-text">
+            <h3>Thought</h3>
+            <div id="thought-modal-body"></div>
+        </section>
+    </div>
+</div>
+
+<script src="/js/thoughtFlash.js"></script>

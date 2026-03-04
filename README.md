@@ -13,6 +13,8 @@ A full-stack personal journal and portfolio platform with a dark, Norse-inspired
 * **Entries:** Rich text blogging with tags, cover images, and drafts.
 * **Timeline:** Log life events in a chronological interface.
 * **Now Page:** A public interface showing what you're currently focused on.
+* **Future Page:** Public letters/messages to your future self, including optional time-locked notes.
+* **Health Page:** A dedicated public page for personal health updates.
 * **Media Library:** Drag-and-drop file manager for images and audio.
 * **Analytics:** Visual charts showing writing streaks, word counts, and entry moods.
 * **Security:** First-run admin setup (signup locks after first account), rate limiting, Helmet, CSP.
@@ -28,6 +30,8 @@ A full-stack personal journal and portfolio platform with a dark, Norse-inspired
    DB_PATH=./data/qraynix.db
    UPLOADS_PATH=./public/uploads
    SITE_URL=http://localhost:3000
+   GEMINI_API_KEY=
+   GEMINI_MODEL=gemini-2.5-flash
    ```
 3. Run migrations: `npm run migrate`
 4. Build assets (CSS & Admin SPA): `npm run build`

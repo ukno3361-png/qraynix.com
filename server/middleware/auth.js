@@ -28,7 +28,7 @@ const requireAuth = (req, res, next) => {
     }
 
     // API routes get JSON error
-    if (req.path.startsWith('/api/')) {
+    if ((req.originalUrl || '').startsWith('/api/') || (req.baseUrl || '').startsWith('/api')) {
         return res.status(401).json({ error: { message: 'Unauthorized', code: 'AUTH_REQUIRED' } });
     }
 

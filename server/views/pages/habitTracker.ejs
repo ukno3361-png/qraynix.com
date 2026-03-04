@@ -1,0 +1,47 @@
+<%# Habit Tracker public page %>
+<div class="container habits-page">
+    <h1 class="section-heading">Habit Tracker</h1>
+
+    <% if (habits && habits.length > 0) { %>
+        <div class="habits-grid">
+            <% habits.forEach((habit) => { %>
+                <article class="habit-card" style="--habit-color: <%= habit.color || '#c9a84c' %>">
+                    <header class="habit-head">
+                        <h2 class="habit-title"><%= habit.name %></h2>
+                        <span class="habit-target"><%= habit.stats.completes_this_week %>/<%= habit.target_per_week %> this week</span>
+                    </header>
+
+                    <% if (habit.description) { %>
+                        <p class="habit-desc"><%= habit.description %></p>
+                    <% } %>
+
+                    <div class="habit-stats">
+                        <div><span>Current streak</span><strong><%= habit.stats.current_streak %>d</strong></div>
+                        <div><span>Best streak</span><strong><%= habit.stats.longest_streak %>d</strong></div>
+                        <div><span>Last 30d</span><strong><%= habit.stats.completion_last_30 %>%</strong></div>
+                    </div>
+
+                    <div class="habit-heatmap">
+                        <% for (let i = 29; i >= 0; i--) {
+                            const d = new Date();
+                            d.setDate(d.getDate() - i);
+                            const key = d.toISOString().slice(0,10);
+                            const log = (habit.recent_logs || []).find((x) => x.log_date === key);
+                            const status = log ? log.status : 'none';
+                        %>
+                            <span class="dot <%= status %>" title="<%= key %> — <%= status %>"></span>
+                        <% } %>
+                    </div>
+                </article>
+            <% }) %>
+        </div>
+    <% } else { %>
+        <div class="card">
+            <div class="empty-state">
+                <div class="empty-icon">⧉</div>
+                <div class="empty-title">No public habits yet</div>
+                <div class="empty-text">Enable habits from your dashboard to show progress here.</div>
+            </div>
+        </div>
+    <% } %>
+</div>

@@ -1,0 +1,90 @@
+<%# Music Page — public player with track notes %>
+<div class="container music-page">
+    <h1 class="section-heading">Music</h1>
+
+    <% if (useSpotify) { %>
+        <div class="music-layout playlist-mode">
+            <section class="music-player-card">
+                <div class="music-now">
+                    <img class="music-cover" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='320'><rect width='100%' height='100%' fill='%2317120f'/><text x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23c9a84c' font-size='120'>♫</text></svg>" alt="Playlist cover" />
+                    <div class="music-meta">
+                        <h2 class="music-title">Playlist</h2>
+                        <p class="music-artist">Live Stream</p>
+                        <p class="music-album">Use the controls below to play and browse tracks.</p>
+                    </div>
+                </div>
+
+                <iframe
+                    class="music-playlist-embed"
+                    src="<%= spotifyEmbedUrl %>"
+                    title="Playlist"
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                    loading="lazy"></iframe>
+            </section>
+
+            <aside class="music-side-card">
+                <h3 class="music-side-title">Playlist Notes</h3>
+                <p class="music-notes"><%= settings.spotify_playlist_notes || 'Curated tracks are available in the player.' %></p>
+                <h3 class="music-side-title" style="margin-top: 1.4rem;">About This Mode</h3>
+                <p class="music-notes">Playback, seek, skip, and volume are controlled directly inside the player.</p>
+            </aside>
+        </div>
+    <% } else if (tracks && tracks.length > 0) { %>
+        <script id="music-tracks-json" type="application/json"><%- JSON.stringify(tracks).replace(/</g, '\\u003c') %></script>
+        <div class="music-layout" id="music-app">
+            <section class="music-player-card">
+                <div class="music-now">
+                    <img class="music-cover" id="music-cover" src="" alt="Album cover" />
+                    <div class="music-meta">
+                        <h2 class="music-title" id="music-title"></h2>
+                        <p class="music-artist" id="music-artist"></p>
+                        <p class="music-album" id="music-album"></p>
+                    </div>
+                </div>
+
+                <canvas id="music-eq" class="music-eq" width="860" height="120"></canvas>
+
+                <audio id="music-audio" preload="metadata"></audio>
+
+                <div class="music-seek-row">
+                    <span id="music-current">0:00</span>
+                    <input id="music-seek" type="range" min="0" max="100" value="0" step="0.1" />
+                    <span id="music-duration">0:00</span>
+                </div>
+
+                <div class="music-controls">
+                    <button class="btn btn-secondary" id="music-restart" type="button">↺ Restart</button>
+                    <button class="btn btn-secondary" id="music-prev" type="button">⏮ Prev</button>
+                    <button class="btn btn-primary" id="music-play" type="button">▶ Play</button>
+                    <button class="btn btn-secondary" id="music-next" type="button">Next ⏭</button>
+                    <button class="btn btn-secondary" id="music-forward" type="button">+10s</button>
+                </div>
+
+                <div class="music-volume">
+                    <label for="music-volume">Volume</label>
+                    <input id="music-volume" type="range" min="0" max="1" step="0.01" value="0.9" />
+                </div>
+            </section>
+
+            <aside class="music-side-card">
+                <h3 class="music-side-title">Track Notes</h3>
+                <p class="music-notes" id="music-notes"></p>
+
+                <h3 class="music-side-title" style="margin-top: 1.4rem;">Playlist</h3>
+                <div class="music-playlist" id="music-playlist"></div>
+            </aside>
+        </div>
+    <% } else { %>
+        <div class="card">
+            <div class="empty-state">
+                <div class="empty-icon">♫</div>
+                <div class="empty-title">No music source configured</div>
+                <div class="empty-text">Set Spotify playlist URL or upload local songs from dashboard Music section.</div>
+            </div>
+        </div>
+    <% } %>
+</div>
+
+<% if (!useSpotify) { %>
+    <script src="/js/music.js"></script>
+<% } %>

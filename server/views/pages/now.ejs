@@ -4,8 +4,8 @@
 
         <% if (blocks && blocks.length> 0) { %>
             <div class="now-grid">
-                <% blocks.forEach(block=> { %>
-                    <%- include('../partials/nowBlock', { block }) %>
+                <% blocks.forEach((block, index)=> { %>
+                    <%- include('../partials/nowBlock', { block, isLatest: index === 0 }) %>
                         <% }) %>
             </div>
             <p

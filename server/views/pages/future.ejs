@@ -1,0 +1,81 @@
+<%# Future Page — letters/messages to future self %>
+<div class="container future-page">
+    <h1 class="section-heading">Letters to My Future Self</h1>
+
+    <section class="future-card future-intro">
+        <p>
+            This page is a vault of messages written for the future version of me.
+            Some are open now. Others are time-locked and will unlock later.
+        </p>
+    </section>
+
+    <section class="future-section">
+        <h2 class="future-section-title">Open Letters</h2>
+
+        <% if (openLetters && openLetters.length > 0) { %>
+            <div class="future-grid">
+                <% openLetters.forEach((letter) => { %>
+                    <article class="future-card <%= letter.is_pinned ? 'pinned' : '' %>">
+                        <header class="future-card-head">
+                            <h3 class="future-title"><%= letter.title %></h3>
+                            <div class="future-badges">
+                                <% if (letter.is_pinned) { %>
+                                    <span class="future-badge">Pinned</span>
+                                <% } %>
+                                <% if (letter.mood) { %>
+                                    <span class="future-badge muted"><%= letter.mood %></span>
+                                <% } %>
+                            </div>
+                        </header>
+
+                        <p class="future-message"><%= letter.message %></p>
+
+                        <p class="future-meta">
+                            <% if (letter.target_date) { %>
+                                Intended for: <%= new Date(letter.target_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) %>
+                            <% } else { %>
+                                Timeless message
+                            <% } %>
+                        </p>
+                    </article>
+                <% }) %>
+            </div>
+        <% } else { %>
+            <div class="future-card empty">
+                <p>No open letters yet.</p>
+            </div>
+        <% } %>
+    </section>
+
+    <section class="future-section">
+        <h2 class="future-section-title">Time-Locked</h2>
+
+        <% if (lockedLetters && lockedLetters.length > 0) { %>
+            <div class="future-grid">
+                <% lockedLetters.forEach((letter) => { %>
+                    <article class="future-card locked <%= letter.is_pinned ? 'pinned' : '' %>">
+                        <header class="future-card-head">
+                            <h3 class="future-title"><%= letter.title %></h3>
+                            <div class="future-badges">
+                                <span class="future-badge"><%= letter.daysLeft %> day<%= letter.daysLeft !== 1 ? 's' : '' %> left</span>
+                                <% if (letter.mood) { %>
+                                    <span class="future-badge muted"><%= letter.mood %></span>
+                                <% } %>
+                            </div>
+                        </header>
+
+                        <p class="future-message masked">This message is sealed until its target date.</p>
+
+                        <p class="future-meta">
+                            Unlocks on <%= new Date(letter.target_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) %>
+                        </p>
+                    </article>
+                <% }) %>
+            </div>
+        <% } else { %>
+            <div class="future-card empty">
+                <p>No locked letters right now.</p>
+            </div>
+        <% } %>
+    </section>
+</div>

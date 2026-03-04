@@ -1,0 +1,38 @@
+<%# Health Page — personal health updates and notes %>
+<div class="container health-page">
+    <h1 class="section-heading health-heading">Health</h1>
+
+    <div class="health-grid">
+        <section class="health-card">
+            <h2 class="health-subtitle">Overview</h2>
+            <div class="health-content">
+                <%- health && health.intro ? health.intro : '' %>
+            </div>
+            <p class="health-muted health-meta">
+                Last updated:
+                <%= health && health.updatedAt ? new Date(health.updatedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'To be added.' %>
+            </p>
+        </section>
+
+        <section class="health-card">
+            <h2 class="health-subtitle">Current Situation</h2>
+            <div class="health-content">
+                <%- health && health.current ? health.current : '' %>
+            </div>
+        </section>
+
+        <section class="health-card">
+            <h2 class="health-subtitle">History & Changes</h2>
+            <div class="health-content">
+                <%- health && health.history ? health.history : '' %>
+            </div>
+        </section>
+
+        <section class="health-card">
+            <h2 class="health-subtitle">Notes</h2>
+            <div class="health-content">
+                <%- health && health.notes ? health.notes : '' %>
+            </div>
+        </section>
+    </div>
+</div>

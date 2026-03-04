@@ -6,7 +6,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { now as nowApi } from '../api.js';
 import { useToast } from '../context/ToastContext.jsx';
 
-const EMPTY = { title: '', content: '', icon: '', sort_order: 0, visible: true };
+const EMPTY = { title: '', content: '', icon: '', sort_order: '', visible: true };
 
 export default function NowEditor() {
     const [blocks, setBlocks] = useState([]);
@@ -25,11 +25,16 @@ export default function NowEditor() {
 
     const handleSave = async () => {
         try {
+            const payload = {
+                ...form,
+                ...(form.sort_order !== '' ? { sort_order: parseInt(form.sort_order, 10) || 0 } : {}),
+            };
+
             if (editing) {
-                await nowApi.update(editing, form);
+                await nowApi.update(editing, payload);
                 toast.success('Updated');
             } else {
-                await nowApi.create(form);
+                await nowApi.create(payload);
                 toast.success('Created');
             }
             setForm(EMPTY); setEditing(null); load();
@@ -70,7 +75,7 @@ export default function NowEditor() {
                     </div>
                     <div className="form-group">
                         <label className="form-label">Sort Order</label>
-                        <input className="form-input" type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: parseInt(e.target.value) || 0 })} />
+                        <input className="form-input" type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: e.target.value })} placeholder="Auto (latest first)" />
                     </div>
                 </div>
                 <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>

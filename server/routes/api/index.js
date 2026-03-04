@@ -12,6 +12,11 @@ const { createNowRouter } = require('./now');
 const { createAccountRouter } = require('./account');
 const { createSettingsRouter } = require('./settings');
 const { createSearchRouter } = require('./search');
+const { createFutureRouter } = require('./future');
+const { createMusicRouter } = require('./music');
+const { createHabitsRouter } = require('./habits');
+const { createThoughtFlashRouter } = require('./thoughtFlash');
+const { createAssistantRouter } = require('./assistant');
 
 /**
  * createApiRouter — mounts all API routes.
@@ -31,6 +36,11 @@ const createApiRouter = (services, uploadMiddleware, config) => {
     router.use('/account', createAccountRouter(services.auth, uploadMiddleware));
     router.use('/settings', createSettingsRouter(services.settings));
     router.use('/search', createSearchRouter(services.search));
+    router.use('/future', createFutureRouter());
+    router.use('/music', createMusicRouter(services.music));
+    router.use('/habits', createHabitsRouter(services.habits));
+    router.use('/thought-flash', createThoughtFlashRouter(services.thoughtFlash));
+    router.use('/assistant', createAssistantRouter(services.assistant));
 
     return router;
 };

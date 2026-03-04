@@ -26,6 +26,27 @@ export function AuthProvider({ children }) {
 
     useEffect(() => { checkAuth(); }, [checkAuth]);
 
+    useEffect(() => {
+        const onVisibilityOrFocus = () => {
+            if (document.visibilityState === 'visible') {
+                checkAuth();
+            }
+        };
+
+        const intervalId = setInterval(() => {
+            checkAuth();
+        }, 60 * 1000);
+
+        window.addEventListener('focus', onVisibilityOrFocus);
+        document.addEventListener('visibilitychange', onVisibilityOrFocus);
+
+        return () => {
+            clearInterval(intervalId);
+            window.removeEventListener('focus', onVisibilityOrFocus);
+            document.removeEventListener('visibilitychange', onVisibilityOrFocus);
+        };
+    }, [checkAuth]);
+
     const logout = async () => {
         await authApi.logout();
         window.location.href = '/login';

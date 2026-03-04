@@ -109,6 +109,48 @@ export const now = {
     reorder: (items) => request(`${API_BASE}/now/reorder`, { method: 'POST', body: JSON.stringify({ items }) }),
 };
 
+// ── Future ──
+export const future = {
+    list: () => request(`${API_BASE}/future`),
+    create: (data) => request(`${API_BASE}/future`, { method: 'POST', body: JSON.stringify(data) }),
+    update: (id, data) => request(`${API_BASE}/future/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
+    remove: (id) => request(`${API_BASE}/future/${id}`, { method: 'DELETE' }),
+};
+
+// ── Music ──
+export const music = {
+    list: (includeHidden = true) => request(`${API_BASE}/music?includeHidden=${includeHidden}`),
+    create: (data) => request(`${API_BASE}/music`, { method: 'POST', body: JSON.stringify(data) }),
+    update: (id, data) => request(`${API_BASE}/music/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
+    remove: (id) => request(`${API_BASE}/music/${id}`, { method: 'DELETE' }),
+};
+
+// ── Habits ──
+export const habits = {
+    list: (includeHidden = true) => request(`${API_BASE}/habits?includeHidden=${includeHidden}`),
+    create: (data) => request(`${API_BASE}/habits`, { method: 'POST', body: JSON.stringify(data) }),
+    update: (id, data) => request(`${API_BASE}/habits/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
+    remove: (id) => request(`${API_BASE}/habits/${id}`, { method: 'DELETE' }),
+    reorder: (items) => request(`${API_BASE}/habits/reorder`, { method: 'POST', body: JSON.stringify({ items }) }),
+    upsertLog: (id, date, data) => request(`${API_BASE}/habits/${id}/log/${date}`, { method: 'PUT', body: JSON.stringify(data) }),
+    logs: (id, params = {}) => {
+        const qs = new URLSearchParams(params).toString();
+        return request(`${API_BASE}/habits/${id}/logs${qs ? '?' + qs : ''}`);
+    },
+};
+
+// ── Thought Flash ──
+export const thoughtFlash = {
+    list: (params = {}) => {
+        const qs = new URLSearchParams(params).toString();
+        return request(`${API_BASE}/thought-flash${qs ? '?' + qs : ''}`);
+    },
+    create: (data) => request(`${API_BASE}/thought-flash`, { method: 'POST', body: JSON.stringify(data) }),
+    update: (id, data) => request(`${API_BASE}/thought-flash/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
+    remove: (id) => request(`${API_BASE}/thought-flash/${id}`, { method: 'DELETE' }),
+    reorder: (items) => request(`${API_BASE}/thought-flash/reorder`, { method: 'POST', body: JSON.stringify({ items }) }),
+};
+
 // ── Account ──
 export const account = {
     get: () => request(`${API_BASE}/account`),
@@ -126,6 +168,11 @@ export const account = {
 export const settings = {
     get: () => request(`${API_BASE}/settings`),
     update: (data) => request(`${API_BASE}/settings`, { method: 'PATCH', body: JSON.stringify(data) }),
+};
+
+// ── Assistant ──
+export const assistant = {
+    testConnection: (data) => request(`${API_BASE}/assistant/test`, { method: 'POST', body: JSON.stringify(data) }),
 };
 
 // ── Search ──

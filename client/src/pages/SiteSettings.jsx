@@ -84,6 +84,11 @@ export default function SiteSettings() {
                     {[
                         { key: 'show_now', label: 'Show Now Page' },
                         { key: 'show_timeline', label: 'Show Timeline' },
+                        { key: 'show_habits', label: 'Show Habit Tracker Page' },
+                        { key: 'show_music', label: 'Show Music Page' },
+                        { key: 'show_future', label: 'Show Future Page' },
+                        { key: 'show_livecam', label: 'Show Live Cam Page' },
+                        { key: 'show_health', label: 'Show Health Page' },
                         { key: 'rss_enabled', label: 'RSS Feed' },
                         { key: 'allow_indexing', label: 'Allow Search Indexing' },
                     ].map(({ key, label }) => (

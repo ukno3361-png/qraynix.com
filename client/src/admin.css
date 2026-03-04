@@ -1,25 +1,51 @@
 /* Admin SPA Styles — Dark Norse dashboard theme */
 
 :root {
-    --bg-deepest: #0a0907;
-    --bg-dark: #110f0c;
-    --bg-surface: #1a1712;
-    --bg-elevated: #242018;
-    --border: #2e2820;
-    --border-glow: #c9a84c;
-    --text-primary: #e8dfc8;
-    --text-secondary: #9c9280;
-    --text-faint: #5c5548;
-    --accent: #c9a84c;
-    --accent-dim: #7a6530;
-    --accent-bright: #f0c060;
+    --bg-deepest: #050505;
+    --bg-dark: #0b0b0d;
+    --bg-surface: #111215;
+    --bg-elevated: #17191f;
+    --border: #252833;
+    --text-primary: #e6e6ea;
+    --text-secondary: #a4a8b3;
+    --text-faint: #6f7584;
+
+    /* Accent presets (easy revert): change only the 3 active assignments below */
+    --accent-gold: #c9a84c;
+    --accent-gold-dim: #7a6530;
+    --accent-gold-bright: #f0c060;
+    --accent-gold-rgb: 201, 168, 76;
+    --accent-gold-dim-rgb: 122, 101, 48;
+    --accent-gold-bright-rgb: 240, 192, 96;
+
+    --accent-cool: #7da2ff;
+    --accent-cool-dim: #4964a8;
+    --accent-cool-bright: #9ebdff;
+    --accent-cool-rgb: 125, 162, 255;
+    --accent-cool-dim-rgb: 73, 100, 168;
+    --accent-cool-bright-rgb: 158, 189, 255;
+
+    --accent-blend: #b19bcf;
+    --accent-blend-dim: #6f5a8e;
+    --accent-blend-bright: #d1c2e8;
+    --accent-blend-rgb: 177, 155, 207;
+    --accent-blend-dim-rgb: 111, 90, 142;
+    --accent-blend-bright-rgb: 209, 194, 232;
+
+    --accent: var(--accent-blend);
+    --accent-dim: var(--accent-blend-dim);
+    --accent-bright: var(--accent-blend-bright);
+    --accent-rgb: var(--accent-blend-rgb);
+    --accent-dim-rgb: var(--accent-blend-dim-rgb);
+    --accent-bright-rgb: var(--accent-blend-bright-rgb);
+    --border-glow: var(--accent);
     --danger: #8b3a3a;
     --danger-hover: #a04545;
     --success: #3a6b4a;
     --info: #3a5a6b;
     --radius: 8px;
     --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
-    --shadow-glow: 0 0 20px rgba(201, 168, 76, 0.15);
+    --shadow-glow: 0 0 20px rgba(var(--accent-rgb), 0.2);
     --font-display: 'Cinzel', serif;
     --font-ui: 'Inter', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
@@ -48,7 +74,7 @@ a:hover {
 }
 
 ::selection {
-    background: rgba(201, 168, 76, 0.3);
+    background: rgba(var(--accent-rgb), 0.3);
 }
 
 /* ── Admin Layout ── */
@@ -94,11 +120,11 @@ a:hover {
 
     0%,
     100% {
-        text-shadow: 0 0 8px rgba(201, 168, 76, 0.5);
+        text-shadow: 0 0 8px rgba(var(--accent-rgb), 0.5);
     }
 
     50% {
-        text-shadow: 0 0 16px rgba(201, 168, 76, 0.8), 0 0 40px rgba(201, 168, 76, 0.5);
+        text-shadow: 0 0 16px rgba(var(--accent-rgb), 0.8), 0 0 40px rgba(var(--accent-rgb), 0.5);
     }
 }
 
@@ -106,6 +132,27 @@ a:hover {
     flex: 1;
     padding: 1rem 0;
     overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(var(--accent-rgb), 0.35) rgba(17, 18, 21, 0.65);
+}
+
+.sidebar-nav::-webkit-scrollbar {
+    width: 8px;
+}
+
+.sidebar-nav::-webkit-scrollbar-track {
+    background: rgba(17, 18, 21, 0.65);
+    border-radius: 999px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgba(var(--accent-rgb), 0.55), rgba(var(--accent-dim-rgb), 0.75));
+    border-radius: 999px;
+    border: 1px solid rgba(37, 40, 51, 0.9);
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, rgba(var(--accent-bright-rgb), 0.75), rgba(var(--accent-rgb), 0.85));
 }
 
 .nav-section {
@@ -130,13 +177,13 @@ a:hover {
 }
 
 .nav-item:hover {
-    background: rgba(201, 168, 76, 0.05);
+    background: rgba(var(--accent-rgb), 0.05);
     color: var(--text-primary);
 }
 
 .nav-item.active {
     color: var(--accent);
-    background: rgba(201, 168, 76, 0.08);
+    background: rgba(var(--accent-rgb), 0.08);
     border-left-color: var(--accent);
 }
 
@@ -199,7 +246,7 @@ a:hover {
 }
 
 .card:hover {
-    border-color: rgba(201, 168, 76, 0.3);
+    border-color: rgba(var(--accent-rgb), 0.3);
     box-shadow: var(--shadow-glow);
 }
 
@@ -231,7 +278,7 @@ a:hover {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(201, 168, 76, 0.05) 0%, transparent 60%);
+    background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.05) 0%, transparent 60%);
 }
 
 .stat-value {
@@ -271,7 +318,7 @@ a:hover {
 }
 
 .btn-primary:hover {
-    box-shadow: 0 4px 20px rgba(201, 168, 76, 0.4);
+    box-shadow: 0 4px 20px rgba(var(--accent-rgb), 0.4);
     transform: translateY(-1px);
 }
 
@@ -344,7 +391,7 @@ a:hover {
 .form-textarea:focus,
 .form-select:focus {
     border-color: var(--accent);
-    box-shadow: 0 0 0 2px rgba(201, 168, 76, 0.2);
+    box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.2);
 }
 
 .form-textarea {
@@ -375,6 +422,11 @@ a:hover {
     border-collapse: collapse;
 }
 
+.table-scroll {
+    width: 100%;
+    overflow-x: auto;
+}
+
 .data-table th,
 .data-table td {
     padding: 0.8rem 1rem;
@@ -391,7 +443,7 @@ a:hover {
 }
 
 .data-table tr:hover td {
-    background: rgba(201, 168, 76, 0.03);
+    background: rgba(var(--accent-rgb), 0.03);
 }
 
 .data-table .status-badge {
@@ -425,9 +477,9 @@ a:hover {
     padding: 0.15rem 0.5rem;
     font-size: 0.75rem;
     border-radius: 10px;
-    background: rgba(201, 168, 76, 0.08);
+    background: rgba(var(--accent-rgb), 0.08);
     color: var(--accent);
-    border: 1px solid rgba(201, 168, 76, 0.2);
+    border: 1px solid rgba(var(--accent-rgb), 0.2);
 }
 
 .tag-chip .tag-remove {
@@ -657,7 +709,7 @@ a:hover {
 }
 
 .toolbar-btn.active {
-    background: rgba(201, 168, 76, 0.15);
+    background: rgba(var(--accent-rgb), 0.15);
     color: var(--accent);
 }
 
@@ -752,6 +804,39 @@ a:hover {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
+}
+
+.habit-mini-chart {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    align-items: end;
+    gap: 0.25rem;
+    width: 170px;
+    height: 44px;
+    padding: 0.25rem;
+    background: rgba(10, 9, 7, 0.45);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+}
+
+.habit-mini-bar {
+    display: block;
+    width: 100%;
+    border-radius: 3px;
+    min-height: 4px;
+    background: rgba(92, 85, 72, 0.65);
+}
+
+.habit-mini-bar.complete {
+    background: rgba(58, 107, 74, 0.95);
+}
+
+.habit-mini-bar.skip {
+    background: rgba(var(--accent-rgb), 0.85);
+}
+
+.habit-mini-bar.miss {
+    background: rgba(139, 58, 58, 0.9);
 }
 
 @media (max-width: 768px) {

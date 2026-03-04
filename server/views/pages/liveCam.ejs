@@ -1,0 +1,30 @@
+<%# Live Cam public page %>
+<div class="container livecam-page">
+    <h1 class="section-heading"><%= settings.livecam_title || 'Live Cam' %></h1>
+    <p class="livecam-desc"><%= settings.livecam_description || 'Live feed from a wilderness of loneliness.' %></p>
+
+    <% if (settings.livecam_enabled === 'true' && settings.livecam_stream_url) { %>
+        <div class="livecam-card">
+            <% if ((settings.livecam_embed_mode || 'image') === 'iframe') { %>
+                <iframe class="livecam-frame" src="<%= settings.livecam_stream_url %>" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            <% } else if ((settings.livecam_embed_mode || 'image') === 'video') { %>
+                <video class="livecam-frame" controls autoplay muted playsinline src="<%= settings.livecam_stream_url %>"></video>
+            <% } else { %>
+                <img class="livecam-frame" src="<%= settings.livecam_stream_url %>" alt="Live camera feed" />
+            <% } %>
+        </div>
+    <% } else { %>
+        <div class="livecam-card">
+            <% if (settings.livecam_placeholder_url) { %>
+                <img class="livecam-frame livecam-placeholder" src="<%= settings.livecam_placeholder_url %>" alt="Live cam placeholder" />
+            <% } else { %>
+                <div class="empty-state">
+                    <div class="empty-icon">◉</div>
+                    <div class="empty-title">Live cam is offline</div>
+                    <div class="empty-text">Stream is currently disabled.</div>
+                </div>
+            <% } %>
+        </div>
+    <% } %>
+
+</div>

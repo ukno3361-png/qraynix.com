@@ -10,23 +10,51 @@
 
             <nav>
                 <ul class="nav-links">
-                    <li><a href="/"
-                            class="<%= typeof currentPath !== 'undefined' && currentPath === '/' ? 'active' : '' %>">Home</a>
+                    <li><a href="/" data-rune="ᚠ"
+                            class="nav-link <%= typeof currentPath !== 'undefined' && currentPath === '/' ? 'active' : '' %>">Home</a>
                     </li>
                     <% if (typeof settings==='undefined' || settings.show_timeline !=='false' ) { %>
-                        <li><a href="/timeline"
-                                class="<%= typeof currentPath !== 'undefined' && currentPath === '/timeline' ? 'active' : '' %>">Timeline</a>
+                        <li><a href="/timeline" data-rune="ᛏ"
+                                class="nav-link <%= typeof currentPath !== 'undefined' && currentPath === '/timeline' ? 'active' : '' %>">Timeline</a>
                         </li>
                         <% } %>
                             <% if (typeof settings==='undefined' || settings.show_now !=='false' ) { %>
-                                <li><a href="/now"
-                                        class="<%= typeof currentPath !== 'undefined' && currentPath === '/now' ? 'active' : '' %>">Now</a>
+                                <li><a href="/now" data-rune="ᚾ"
+                                        class="nav-link <%= typeof currentPath !== 'undefined' && currentPath === '/now' ? 'active' : '' %>">Now</a>
                                 </li>
                                 <% } %>
+                                    <% if (typeof settings==='undefined' || settings.show_habits !=='false' ) { %>
+                                        <li><a href="/habit-tracker" data-rune="ᚺ"
+                                            class="nav-link <%= typeof currentPath !== 'undefined' && currentPath === '/habit-tracker' ? 'active' : '' %>">Habits</a>
+                                        </li>
+                                    <% } %>
+                                    <% if (typeof settings==='undefined' || settings.show_music !=='false' ) { %>
+                                        <li><a href="/music" data-rune="ᛗ"
+                                            class="nav-link <%= typeof currentPath !== 'undefined' && currentPath === '/music' ? 'active' : '' %>">Music</a>
+                                        </li>
+                                    <% } %>
+                                    <% if (typeof settings==='undefined' || settings.show_future !=='false' ) { %>
+                                        <li><a href="/future" data-rune="ᚢ"
+                                            class="nav-link <%= typeof currentPath !== 'undefined' && currentPath === '/future' ? 'active' : '' %>">Future</a>
+                                        </li>
+                                    <% } %>
+                                    <li><a href="/thought-flash" data-rune="ᛃ"
+                                        class="nav-link <%= typeof currentPath !== 'undefined' && currentPath === '/thought-flash' ? 'active' : '' %>">Thought Flash</a>
+                                    </li>
+                                    <% if (typeof settings==='undefined' || settings.show_livecam !=='false' ) { %>
+                                        <li><a href="/live-cam" data-rune="ᛚ"
+                                            class="nav-link <%= typeof currentPath !== 'undefined' && currentPath === '/live-cam' ? 'active' : '' %>">Live Cam</a>
+                                        </li>
+                                    <% } %>
+                                    <% if (typeof settings==='undefined' || settings.show_health !=='false' ) { %>
+                                        <li><a href="/health" data-rune="ᛇ"
+                                            class="nav-link <%= typeof currentPath !== 'undefined' && currentPath === '/health' ? 'active' : '' %>">Health</a>
+                                        </li>
+                                    <% } %>
                                     <% if (typeof currentUser !=='undefined' && currentUser) { %>
-                                        <li><a href="/admin">Dashboard</a></li>
+                                        <li><a href="/admin" data-rune="ᛞ" class="nav-link">Dashboard</a></li>
                                         <% } else { %>
-                                            <li><a href="/login">Login</a></li>
+                                            <li><a href="/login" data-rune="ᛜ" class="nav-link">Login</a></li>
                                             <% } %>
                 </ul>
             </nav>

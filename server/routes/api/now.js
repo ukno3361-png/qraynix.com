@@ -13,15 +13,25 @@ const createNowRouter = () => {
 
     router.get('/', (req, res) => {
         const db = getDb();
-        res.json(db.prepare('SELECT * FROM now_blocks ORDER BY sort_order ASC').all());
+        res.json(db.prepare('SELECT * FROM now_blocks ORDER BY sort_order ASC, updated_at DESC, id DESC').all());
     });
 
     router.post('/', (req, res) => {
         const db = getDb();
         const { title, content, icon, sort_order, visible } = req.body;
+
+        const hasSortOrder = sort_order !== undefined && sort_order !== null && sort_order !== '';
+        let effectiveSortOrder = 0;
+        if (hasSortOrder) {
+            effectiveSortOrder = parseInt(sort_order, 10) || 0;
+        } else {
+            const row = db.prepare('SELECT MIN(sort_order) as minSort FROM now_blocks').get();
+            effectiveSortOrder = row && row.minSort !== null ? row.minSort - 1 : 0;
+        }
+
         const result = db.prepare(
             'INSERT INTO now_blocks (title, content, icon, sort_order, visible) VALUES (?, ?, ?, ?, ?)'
-        ).run(title, content, icon || null, sort_order || 0, visible !== false ? 1 : 0);
+        ).run(title, content, icon || null, effectiveSortOrder, visible !== false ? 1 : 0);
         res.status(201).json(db.prepare('SELECT * FROM now_blocks WHERE id = ?').get(result.lastInsertRowid));
     });
 
