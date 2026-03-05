@@ -22,6 +22,22 @@ const TB = ({ active, onClick, children, title }) => (
     <button className={`toolbar-btn ${active ? 'active' : ''}`} onClick={onClick} title={title}>{children}</button>
 );
 
+const pad = (value) => String(value).padStart(2, '0');
+
+const isoToLocalDateTime = (isoString) => {
+    if (!isoString) return '';
+    const date = new Date(isoString);
+    if (Number.isNaN(date.getTime())) return '';
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+};
+
+const localDateTimeToIso = (value) => {
+    if (!value) return null;
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return null;
+    return date.toISOString();
+};
+
 export default function EntryEditor() {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -33,6 +49,7 @@ export default function EntryEditor() {
     const [selectedTags, setSelectedTags] = useState([]);
     const [saving, setSaving] = useState(false);
     const [loading, setLoading] = useState(!isNew);
+    const [entryDate, setEntryDate] = useState('');
     const autosaveRef = useRef(null);
 
     const editor = useEditor({
@@ -62,6 +79,7 @@ export default function EntryEditor() {
             if (!isNew) {
                 const e = await entriesApi.get(id);
                 setEntry(e);
+                setEntryDate(isoToLocalDateTime(e.published_at));
                 setSelectedTags((e.tags || []).map(t => t.id));
                 if (editor) editor.commands.setContent(e.content_html || e.content || '');
                 setLoading(false);
@@ -76,7 +94,12 @@ export default function EntryEditor() {
         try {
             const content_html = editor.getHTML();
             const content = editor.getText();
-            const payload = { ...entry, content, content_html };
+            const payload = {
+                ...entry,
+                content,
+                content_html,
+                published_at: localDateTimeToIso(entryDate),
+            };
             delete payload.id; delete payload.tags; delete payload.created_at; delete payload.updated_at;
 
             let saved;
@@ -120,6 +143,9 @@ export default function EntryEditor() {
     }, [handleSave]);
 
     const handlePublish = async () => {
+        if (!entryDate) {
+            setEntryDate(isoToLocalDateTime(new Date().toISOString()));
+        }
         setEntry((prev) => ({ ...prev, status: 'published' }));
         setTimeout(() => handleSave(), 100);
     };
@@ -206,6 +232,18 @@ export default function EntryEditor() {
                                 <option value="published">Published</option>
                                 <option value="private">Private</option>
                             </select>
+                        </div>
+                        <div className="form-group">
+                            <label className="form-label">Entry Date</label>
+                            <input
+                                className="form-input"
+                                type="datetime-local"
+                                value={entryDate}
+                                onChange={(e) => setEntryDate(e.target.value)}
+                            />
+                            <div style={{ marginTop: '0.4rem' }}>
+                                <button type="button" className="btn btn-ghost btn-sm" onClick={() => setEntryDate('')}>Clear Date</button>
+                            </div>
                         </div>
                         <div className="form-group">
                             <label className="form-label">Excerpt</label>

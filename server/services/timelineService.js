@@ -5,6 +5,9 @@
 
 const { getDb } = require('../db');
 
+const RUNE_ICONS = new Set(['ᚠ', 'ᚢ', 'ᚦ', 'ᚨ', 'ᚱ', 'ᚲ', 'ᚷ', 'ᚹ', 'ᚺ', 'ᚾ', 'ᛁ', 'ᛃ', 'ᛇ', 'ᛈ', 'ᛉ', 'ᛊ', 'ᛏ', 'ᛒ', 'ᛖ', 'ᛗ', 'ᛚ', 'ᛜ', 'ᛞ', 'ᛟ']);
+const normalizeIcon = (value) => (RUNE_ICONS.has(value) ? value : 'ᚱ');
+
 const createTimelineService = () => {
     const list = () => {
         const db = getDb();
@@ -22,14 +25,16 @@ const createTimelineService = () => {
       INSERT INTO timeline_events (title, description, event_date, category, icon, color, link_url, link_label, sort_order)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(data.title, data.description, data.event_date, data.category || 'life',
-            data.icon, data.color || '#c9a84c', data.link_url, data.link_label, data.sort_order || 0);
+                        normalizeIcon(data.icon), data.color || '#c9a84c', data.link_url, data.link_label, data.sort_order || 0);
         return getById(result.lastInsertRowid);
     };
 
     const update = (id, patch) => {
         const db = getDb();
         const allowed = ['title', 'description', 'event_date', 'category', 'icon', 'color', 'link_url', 'link_label', 'sort_order'];
-        const updates = Object.entries(patch).filter(([k]) => allowed.includes(k));
+        const updates = Object.entries(patch)
+            .filter(([k]) => allowed.includes(k))
+            .map(([k, v]) => (k === 'icon' ? [k, normalizeIcon(v)] : [k, v]));
         if (updates.length === 0) return getById(id);
 
         const setClause = updates.map(([k]) => `${k} = ?`).join(', ');

@@ -20,11 +20,20 @@ const createNotFoundHandler = () => (req, res, next) => {
  * @returns {import('express').ErrorRequestHandler}
  */
 const createErrorHandler = (isDev) => (err, req, res, _next) => {
-    const status = err.status || 500;
+    const status = err.status
+        || err.statusCode
+        || (err.code === 'LIMIT_FILE_SIZE' ? 413 : undefined)
+        || (err.type === 'entity.too.large' ? 413 : undefined)
+        || 500;
     const routePath = String(req.originalUrl || req.baseUrl || req.path || '');
+    const message = (() => {
+        if (err.code === 'LIMIT_FILE_SIZE') return 'Uploaded file is too large for current server limits.';
+        if (err.type === 'entity.too.large' || status === 413) return err.message || 'Upload payload is too large.';
+        return err.message || 'Internal server error';
+    })();
 
     if (isDev) {
-        console.error(`[ERROR] ${status} — ${err.message}`);
+        console.error(`[ERROR] ${status} — ${message}`);
         if (status >= 500) console.error(err.stack);
     }
 
@@ -32,7 +41,7 @@ const createErrorHandler = (isDev) => (err, req, res, _next) => {
     if (routePath.startsWith('/api/') || routePath.startsWith('/auth/')) {
         return res.status(status).json({
             error: {
-                message: err.message || 'Internal server error',
+                message,
                 code: status === 404 ? 'NOT_FOUND' : 'SERVER_ERROR',
                 ...(isDev && { stack: err.stack }),
             },
@@ -43,7 +52,7 @@ const createErrorHandler = (isDev) => (err, req, res, _next) => {
     res.status(status).render('pages/error', {
         title: `${status} | Qraynix`,
         statusCode: status,
-        message: err.message || 'Something went wrong',
+        message,
         stack: isDev ? err.stack : null,
     });
 };

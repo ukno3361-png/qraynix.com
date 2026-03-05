@@ -7,6 +7,9 @@ import { timeline as timelineApi } from '../api.js';
 import { useToast } from '../context/ToastContext.jsx';
 
 const EMPTY = { title: '', description: '', event_date: '', category: 'life', icon: 'ᚱ', color: '#c9a84c', link_url: '', link_label: '' };
+const RUNE_OPTIONS = ['ᚠ', 'ᚢ', 'ᚦ', 'ᚨ', 'ᚱ', 'ᚲ', 'ᚷ', 'ᚹ', 'ᚺ', 'ᚾ', 'ᛁ', 'ᛃ', 'ᛇ', 'ᛈ', 'ᛉ', 'ᛊ', 'ᛏ', 'ᛒ', 'ᛖ', 'ᛗ', 'ᛚ', 'ᛜ', 'ᛞ', 'ᛟ'];
+
+const normalizeRuneIcon = (value) => (RUNE_OPTIONS.includes(value) ? value : 'ᚱ');
 
 export default function TimelineManager() {
     const [events, setEvents] = useState([]);
@@ -27,11 +30,16 @@ export default function TimelineManager() {
 
     const handleSave = async () => {
         try {
+            const payload = {
+                ...form,
+                icon: normalizeRuneIcon(form.icon),
+            };
+
             if (editing) {
-                await timelineApi.update(editing, form);
+                await timelineApi.update(editing, payload);
                 toast.success('Event updated');
             } else {
-                await timelineApi.create(form);
+                await timelineApi.create(payload);
                 toast.success('Event created');
             }
             setForm(EMPTY); setEditing(null); load();
@@ -44,7 +52,13 @@ export default function TimelineManager() {
         toast.success('Deleted'); load();
     };
 
-    const startEdit = (evt) => { setEditing(evt.id); setForm(evt); };
+    const startEdit = (evt) => {
+        setEditing(evt.id);
+        setForm({
+            ...evt,
+            icon: normalizeRuneIcon(evt.icon),
+        });
+    };
     const cancelEdit = () => { setEditing(null); setForm(EMPTY); };
 
     if (loading) return <div className="page-loader"><div className="spinner spinner-lg"></div></div>;
@@ -83,7 +97,15 @@ export default function TimelineManager() {
                     </div>
                     <div className="form-group">
                         <label className="form-label">Icon</label>
-                        <input className="form-input" value={form.icon || ''} onChange={(e) => setForm({ ...form, icon: e.target.value })} placeholder="ᚱ" />
+                        <select
+                            className="form-select"
+                            value={normalizeRuneIcon(form.icon)}
+                            onChange={(e) => setForm({ ...form, icon: e.target.value })}
+                        >
+                            {RUNE_OPTIONS.map((rune) => (
+                                <option key={rune} value={rune}>{rune}</option>
+                            ))}
+                        </select>
                     </div>
                 </div>
                 <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>

@@ -44,14 +44,18 @@ const createEntryService = () => {
         const rt = estimateReadTime(wc);
 
         const result = db.prepare(`
-      INSERT INTO entries (title, slug, content, content_html, excerpt, status,
+            INSERT INTO entries (title, slug, content, content_html, excerpt, status,
         cover_image, featured, mood, location, weather, word_count, read_time, published_at)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
             title, slug, content, content_html, excerpt, status,
             rest.cover_image || null, rest.featured ? 1 : 0,
             rest.mood || null, rest.location || null, rest.weather || null,
-            wc, rt, status === 'published' ? new Date().toISOString() : null
+                        wc,
+                        rt,
+                        rest.published_at
+                                ? new Date(rest.published_at).toISOString()
+                                : (status === 'published' ? new Date().toISOString() : null)
         );
 
         return getById(result.lastInsertRowid);
@@ -109,7 +113,7 @@ const createEntryService = () => {
 
         const entries = db.prepare(`
       SELECT e.* FROM entries e ${whereClause}
-      ORDER BY e.created_at DESC LIMIT ? OFFSET ?
+            ORDER BY COALESCE(e.published_at, e.created_at) DESC, e.id DESC LIMIT ? OFFSET ?
     `).all(...params, pag.perPage, pag.offset);
 
         // Attach tags to each entry
@@ -125,7 +129,7 @@ const createEntryService = () => {
         const db = getDb();
         const allowed = [
             'title', 'content', 'content_html', 'excerpt', 'status',
-            'cover_image', 'featured', 'mood', 'location', 'weather',
+            'cover_image', 'featured', 'mood', 'location', 'weather', 'published_at',
         ];
         const updates = Object.entries(patch).filter(([k]) => allowed.includes(k));
 

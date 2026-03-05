@@ -47,6 +47,9 @@ const request = async (url, options = {}) => {
     if (!res.ok) {
         const serverMessage = data?.error?.message || data?.message;
         if (serverMessage) throw new Error(serverMessage);
+        if (res.status === 413) {
+            throw new Error('Upload too large (413). Reduce file size or increase upload limits on the server/proxy (e.g., nginx client_max_body_size).');
+        }
         if (contentType.includes('text/html')) {
             throw new Error(`Request failed (${res.status}) — server returned HTML instead of JSON`);
         }

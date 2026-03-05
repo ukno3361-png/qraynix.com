@@ -15,4 +15,4 @@ jobs:
           git pull origin main
           npm install --production
           npm run build
-          pm2 reload website
+          pm2 startOrReload ecosystem.config.js --env production
