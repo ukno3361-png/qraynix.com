@@ -1,9 +1,23 @@
 <%# EJS Partial: entryCard — reusable card for entry listings %>
     <% const RUNES='ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛞᛟ' ; %>
+        <% const rawCover=String(entry.cover_image || '').replace(/\\/g, '/').trim(); %>
+            <% const normalizedCover=rawCover
+                ? (rawCover.startsWith('http://') || rawCover.startsWith('https://')
+                    ? rawCover
+                    : (rawCover.startsWith('/uploads/')
+                        ? rawCover
+                        : (rawCover.startsWith('/image/') || rawCover.startsWith('/audio/') || rawCover.startsWith('/video/')
+                            ? `/uploads${rawCover}`
+                            : (rawCover.startsWith('uploads/') ? `/${rawCover}` : `/${rawCover.replace(/^\/+/, '')}`))))
+                : ''; %>
         <a href="/entry/<%= entry.slug %>" class="entry-card fade-in">
-            <% if (entry.cover_image) { %>
-                <img src="<%= entry.cover_image %>" alt="<%= entry.title %>" class="entry-cover" loading="lazy">
-                <% } %>
+            <div class="entry-cover-wrap">
+                <% if (normalizedCover) { %>
+                    <img src="<%= normalizedCover %>" alt="<%= entry.title %>" class="entry-cover" loading="lazy">
+                    <% } else { %>
+                        <div class="entry-cover-placeholder" aria-hidden="true">ᛟ</div>
+                        <% } %>
+            </div>
                     <span class="entry-rune">
                         <%= RUNES[entry.id % RUNES.length] %>
                     </span>

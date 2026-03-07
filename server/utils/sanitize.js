@@ -28,7 +28,7 @@ const sanitizeHtml = (html) => {
         ALLOWED_ATTR: [
             'href', 'src', 'alt', 'title', 'class', 'id', 'target', 'rel',
             'width', 'height', 'controls', 'poster', 'type', 'checked', 'disabled',
-            'data-type', 'data-language', 'style', 'colspan', 'rowspan',
+            'data-type', 'data-language', 'data-display', 'data-align', 'data-journal-image', 'data-width', 'data-sidecar-layout', 'style', 'colspan', 'rowspan',
         ],
     });
 };

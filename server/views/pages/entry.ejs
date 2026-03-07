@@ -1,12 +1,27 @@
 <%# Single Entry Page %>
     <% const RUNES='ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛞᛟ' ; %>
+        <% const rawCover=String(entry.cover_image || '').replace(/\\/g, '/').trim(); %>
+            <% const coverSrc=rawCover
+                ? (rawCover.startsWith('http://') || rawCover.startsWith('https://')
+                    ? rawCover
+                    : (rawCover.startsWith('/uploads/')
+                        ? rawCover
+                        : (rawCover.startsWith('/image/') || rawCover.startsWith('/audio/') || rawCover.startsWith('/video/')
+                            ? `/uploads${rawCover}`
+                            : (rawCover.startsWith('uploads/') ? `/${rawCover}` : `/${rawCover.replace(/^\/+/, '')}`))))
+                : ''; %>
+
+        <div class="entry-page">
 
         <%# Reading Progress Bar %>
             <div class="reading-progress" id="reading-progress" style="width: 0%;"></div>
 
             <%# Hero %>
-                <div class="entry-hero"
-                    style="<%= entry.cover_image ? 'background-image: url(' + entry.cover_image + ')' : '' %>">
+                <% if (coverSrc) { %>
+                    <div class="entry-hero" style="background-image: url('<%= coverSrc %>')">
+                <% } else { %>
+                    <div class="entry-hero">
+                <% } %>
                     <div class="entry-hero-inner">
                         <div class="tags-row" style="margin-bottom: 1rem;">
                             <% (entry.tags || []).forEach(tag=> { %>
@@ -73,3 +88,4 @@
                                     }
                                 });
                             </script>
+        </div>

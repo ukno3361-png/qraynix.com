@@ -50,14 +50,43 @@
                         break;
                     }
 
-                    let randNum = Math.floor(Math.random() * (40 - 15) + 15); // Fast, natural typing speed
+                    const currentChar = text[i];
+                    const nextChar = text[i + 1] || '';
+                    const prevChar = text[i - 1] || '';
 
-                    // Natural rhythm pauses
-                    if (text[i] === '.' || text[i] === ',' || text[i] === '\n') {
-                        randNum += 200; // Pause at punctuation
-                    } else if (Math.random() < 0.02) {
-                        randNum += 150; // Random mid-word pause
+                    // Humanized baseline typing speed (not machine-fast).
+                    let randNum = Math.floor(Math.random() * (145 - 55) + 55);
+
+                    // Word boundary micro-pauses and rhythm shifts.
+                    if (currentChar === ' ') {
+                        randNum += Math.floor(Math.random() * 80) + 25;
                     }
+
+                    // Punctuation pauses feel longer in natural typing.
+                    if (currentChar === '.' || currentChar === '!' || currentChar === '?') {
+                        randNum += Math.floor(Math.random() * 380) + 260;
+                    } else if (currentChar === ',' || currentChar === ';' || currentChar === ':') {
+                        randNum += Math.floor(Math.random() * 220) + 140;
+                    } else if (currentChar === '\n') {
+                        randNum += Math.floor(Math.random() * 260) + 200;
+                    }
+
+                    // Longer pause before starting a new sentence.
+                    if ((prevChar === '.' || prevChar === '!' || prevChar === '?') && currentChar === ' ') {
+                        randNum += Math.floor(Math.random() * 240) + 180;
+                    }
+
+                    // Occasional brief "thinking" pauses.
+                    if (Math.random() < 0.035 && /[a-zA-Z0-9]/.test(currentChar)) {
+                        randNum += Math.floor(Math.random() * 220) + 120;
+                    }
+
+                    // Slight burst typing for short fragments.
+                    if (/[a-zA-Z]/.test(currentChar) && /[a-zA-Z]/.test(nextChar) && Math.random() < 0.14) {
+                        randNum -= Math.floor(Math.random() * 18);
+                    }
+
+                    randNum = Math.max(45, randNum);
 
                     await timer(randNum);
                     node.nodeValue += text[i];

@@ -37,7 +37,6 @@ export default function AdminLayout() {
             {/* Sidebar */}
             <aside className={`admin-sidebar ${sidebarOpen ? 'open' : ''}`}>
                 <div className="sidebar-header">
-                    <span className="sidebar-rune">◈</span>
                     <span className="sidebar-logo">Qraynix</span>
                 </div>
 

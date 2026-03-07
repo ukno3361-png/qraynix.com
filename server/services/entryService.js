@@ -8,6 +8,17 @@ const { getDb } = require('../db');
 const { slugify } = require('../utils/slugify');
 const { paginate } = require('../utils/paginate');
 
+const normalizeCoverImage = (value) => {
+    if (!value) return null;
+    const raw = String(value).replace(/\\/g, '/').trim();
+    if (!raw) return null;
+    if (raw.startsWith('http://') || raw.startsWith('https://') || raw.startsWith('data:')) return raw;
+    if (raw.startsWith('/uploads/')) return raw;
+    if (raw.startsWith('/image/') || raw.startsWith('/audio/') || raw.startsWith('/video/')) return `/uploads${raw}`;
+    if (raw.startsWith('uploads/')) return `/${raw}`;
+    return `/${raw.replace(/^\/+/, '')}`;
+};
+
 /**
  * countWords — counts words in a text string.
  * @param {string} text
@@ -49,7 +60,7 @@ const createEntryService = () => {
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
             title, slug, content, content_html, excerpt, status,
-            rest.cover_image || null, rest.featured ? 1 : 0,
+            normalizeCoverImage(rest.cover_image), rest.featured ? 1 : 0,
             rest.mood || null, rest.location || null, rest.weather || null,
                         wc,
                         rt,
@@ -73,6 +84,7 @@ const createEntryService = () => {
       WHERE et.entry_id = ?
     `).all(id);
 
+        entry.cover_image = normalizeCoverImage(entry.cover_image);
         return entry;
     };
 
@@ -87,6 +99,7 @@ const createEntryService = () => {
       WHERE et.entry_id = ?
     `).all(entry.id);
 
+        entry.cover_image = normalizeCoverImage(entry.cover_image);
         return entry;
     };
 
@@ -120,7 +133,10 @@ const createEntryService = () => {
         const tagStmt = db.prepare(`
       SELECT t.* FROM tags t JOIN entry_tags et ON et.tag_id = t.id WHERE et.entry_id = ?
     `);
-        entries.forEach((e) => { e.tags = tagStmt.all(e.id); });
+        entries.forEach((e) => {
+            e.tags = tagStmt.all(e.id);
+            e.cover_image = normalizeCoverImage(e.cover_image);
+        });
 
         return { entries, pagination: pag };
     };
@@ -131,7 +147,11 @@ const createEntryService = () => {
             'title', 'content', 'content_html', 'excerpt', 'status',
             'cover_image', 'featured', 'mood', 'location', 'weather', 'published_at',
         ];
-        const updates = Object.entries(patch).filter(([k]) => allowed.includes(k));
+        const normalizedPatch = { ...patch };
+        if (Object.prototype.hasOwnProperty.call(patch, 'cover_image')) {
+            normalizedPatch.cover_image = normalizeCoverImage(patch.cover_image);
+        }
+        const updates = Object.entries(normalizedPatch).filter(([k]) => allowed.includes(k));
 
         if (updates.length === 0) return getById(id);
 
