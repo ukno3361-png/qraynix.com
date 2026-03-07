@@ -183,8 +183,9 @@ code {
 
 .nav-links {
     display: flex;
-    gap: 2rem;
+    gap: 1.6rem;
     list-style: none;
+    align-items: center;
 
     a {
         position: relative;
@@ -244,6 +245,70 @@ code {
     @include respond(tablet) {
         display: block;
     }
+}
+
+// ── "More" dropdown ──
+.nav-more-wrap {
+    position: relative;
+}
+
+.nav-more-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: $font-ui;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: $color-text-secondary;
+    padding: 0;
+    padding-bottom: 0.35rem;
+    transition: color 0.2s;
+    &:hover { color: $color-accent; }
+}
+
+.nav-more-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 0.6rem);
+    right: 0;
+    min-width: 160px;
+    background: rgba($color-bg-surface, 0.97);
+    backdrop-filter: blur(16px);
+    border: 1px solid $color-border;
+    border-radius: 8px;
+    padding: 0.4rem 0;
+    list-style: none;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    z-index: 200;
+
+    li {
+        padding: 0;
+    }
+
+    a {
+        display: block;
+        padding: 0.55rem 1rem;
+        font-family: $font-ui;
+        font-size: 0.85rem;
+        color: $color-text-secondary;
+        transition: background 0.15s, color 0.15s;
+        white-space: nowrap;
+
+        &::before { display: none; } // hide rune on dropdown items
+
+        &:hover {
+            background: rgba($color-accent, 0.1);
+            color: $color-accent;
+        }
+
+        &.active {
+            color: $color-accent;
+        }
+    }
+}
+
+.nav-more-wrap.open .nav-more-dropdown {
+    display: block;
 }
 
 // ── Hero ──
@@ -1553,7 +1618,7 @@ video.livecam-frame {
 
 // ── Thought Flash ──
 .thought-flash-page {
-    max-width: 1250px;
+    max-width: $bp-wide;
     margin: 0 auto;
     padding-bottom: 2rem;
 }
@@ -1565,28 +1630,16 @@ video.livecam-frame {
 }
 
 .thought-grid {
-    column-count: 4;
-    column-gap: 0.6rem;
-
-    @media (max-width: 1200px) {
-        column-count: 3;
-    }
-
-    @media (max-width: 900px) {
-        column-count: 2;
-    }
-
-    @media (max-width: 560px) {
-        column-count: 1;
-    }
+    position: relative;
+    width: 100%;
+    transition: height 0.2s;
 }
 
 .thought-card {
     @include cardSurface;
-    display: inline-block;
-    width: 100%;
-    margin: 0 0 0.6rem;
-    break-inside: avoid;
+    position: absolute;
+    left: 0;
+    top: 0;
     overflow: hidden;
     cursor: pointer;
     padding: 0;
@@ -1597,7 +1650,6 @@ video.livecam-frame {
 
     .thought-media {
         width: 100%;
-        max-height: 360px;
         display: block;
         background: $color-bg-deepest;
         object-fit: cover;
@@ -1672,6 +1724,485 @@ video.livecam-frame {
     transition: transform 0.24s ease, opacity 0.24s ease;
     scrollbar-width: thin;
     scrollbar-color: rgba($color-accent, 0.65) rgba($color-bg-surface, 0.85);
+}
+
+// ═══════════════════════════════════════
+// ENTERTAINMENT PAGE (Public)
+// ═══════════════════════════════════════
+
+.entertainment-page {
+    padding: 3rem 0;
+}
+
+.entertainment-sub {
+    text-align: center;
+    color: $color-text-secondary;
+    font-family: $font-body;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.entertainment-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+}
+
+.entertainment-filters .filter-chip {
+    padding: 0.4rem 1rem;
+    border: 1px solid $color-border;
+    border-radius: 999px;
+    background: $color-bg-surface;
+    color: $color-text-secondary;
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: all 0.2s;
+    font-family: $font-ui;
+}
+.entertainment-filters .filter-chip:hover { border-color: $color-accent; color: $color-text-primary; }
+.entertainment-filters .filter-chip.active {
+    background: $color-accent;
+    color: $color-bg-deepest;
+    border-color: $color-accent;
+    font-weight: 600;
+}
+
+.entertainment-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.entertainment-card {
+    background: $color-bg-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    overflow: hidden;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+.entertainment-card:hover {
+    border-color: $color-accent-dim;
+    box-shadow: $shadow-glow;
+}
+.entertainment-card.featured {
+    border-color: $accent-gold-dim;
+    box-shadow: 0 0 20px rgba($accent-gold, 0.15);
+}
+
+.entertainment-cover {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+}
+.entertainment-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.spoiler-badge {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: rgba($color-danger, 0.9);
+    color: #fff;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.72rem;
+    font-weight: 600;
+}
+
+// YouTube play overlay on card
+.yt-cover {
+    position: relative;
+}
+.yt-play-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 52px;
+    height: 52px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    color: #fff;
+    pointer-events: none;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    transition: transform 0.2s;
+}
+a.entertainment-card:hover .yt-play-overlay {
+    transform: translate(-50%, -50%) scale(1.1);
+    background: rgba($color-danger, 0.8);
+}
+
+.entertainment-card-body {
+    padding: 1rem 1.25rem;
+}
+
+.entertainment-card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.entertainment-type-badge {
+    display: inline-block;
+    padding: 0.3rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+    background: rgba($color-accent, 0.12);
+    color: $color-accent;
+    border: 1px solid rgba($color-accent, 0.2);
+}
+
+.entertainment-rating {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+.entertainment-rating .star {
+    color: $color-border;
+    font-size: 0.7rem;
+}
+.entertainment-rating .star.filled { color: $accent-gold; }
+.entertainment-rating .rating-num {
+    margin-left: 0.4rem;
+    color: $color-text-faint;
+    font-size: 0.78rem;
+}
+
+.entertainment-card-title {
+    font-family: $font-display;
+    color: $color-text-primary;
+    font-size: 1.15rem;
+    margin: 0 0 0.35rem;
+}
+
+.entertainment-creator {
+    color: $color-text-secondary;
+    font-size: 0.88rem;
+    font-style: italic;
+    margin-bottom: 0.25rem;
+}
+
+.entertainment-genre {
+    color: $color-text-faint;
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.entertainment-status-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.4rem;
+}
+
+.watch-status-badge {
+    display: inline-block;
+    padding: 0.3rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+    border: 1px solid $color-border;
+}
+.ws-completed { background: rgba($color-success, 0.2); color: #5ea87a; border-color: $color-success; }
+.ws-watching { background: rgba($color-info, 0.2); color: #5e8a9f; border-color: $color-info; }
+.ws-dropped { background: rgba($color-danger, 0.2); color: #bf5e5e; border-color: $color-danger; }
+.ws-plan-to-watch { background: rgba($color-accent, 0.2); color: $color-accent; border-color: $color-accent-dim; }
+.ws-on-hold { background: rgba($accent-gold, 0.2); color: $accent-gold; border-color: $accent-gold-dim; }
+
+.entertainment-year {
+    color: $color-text-faint;
+    font-size: 0.8rem;
+}
+
+.recommendation-badge {
+    display: inline-block;
+    padding: 0.3rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+    border: 1px solid $color-border;
+    margin-bottom: 0.75rem;
+}
+.rec-must-watch { background: rgba($color-success, 0.2); color: #5ea87a; border-color: $color-success; }
+.rec-highly-recommended { background: rgba($color-accent, 0.2); color: $color-accent; border-color: $color-accent-dim; }
+.rec-recommended { background: rgba($color-info, 0.2); color: #5e8a9f; border-color: $color-info; }
+.rec-mixed-feelings { background: rgba($accent-gold, 0.2); color: $accent-gold; border-color: $accent-gold-dim; }
+.rec-not-recommended { background: rgba($color-danger, 0.2); color: #bf5e5e; border-color: $color-danger; }
+
+.entertainment-review-text {
+    color: $color-text-secondary;
+    font-family: $font-body;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+    max-height: 120px;
+    overflow: hidden;
+    position: relative;
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 40px;
+        background: linear-gradient(transparent, $color-bg-surface);
+    }
+}
+
+.entertainment-audio {
+    margin: 0.5rem 0;
+    audio {
+        width: 100%;
+        height: 36px;
+    }
+}
+
+.entertainment-ext-link {
+    display: inline-block;
+    color: $color-accent;
+    font-size: 0.85rem;
+    text-decoration: none;
+    margin-top: 0.25rem;
+    &:hover { text-decoration: underline; }
+}
+
+.empty-notice {
+    text-align: center;
+    color: $color-text-faint;
+    padding: 3rem 1rem;
+    font-family: $font-body;
+    font-size: 1.1rem;
+}
+
+// Card as link — remove default anchor styles
+a.entertainment-card {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    &:hover { color: inherit; }
+    .entertainment-type-badge,
+    .watch-status-badge,
+    .recommendation-badge,
+    .entertainment-card-title,
+    .entertainment-creator,
+    .entertainment-genre,
+    .entertainment-year,
+    .entertainment-rating .rating-num {
+        color: inherit;
+    }
+    .entertainment-type-badge { color: $color-accent; }
+    .entertainment-card-title { color: $color-text-primary; }
+    .entertainment-creator { color: $color-text-secondary; }
+    .entertainment-genre, .entertainment-year { color: $color-text-faint; }
+    .entertainment-rating .rating-num { color: $color-text-faint; }
+    .ws-completed { color: #5ea87a; }
+    .ws-watching { color: #5e8a9f; }
+    .ws-dropped { color: #bf5e5e; }
+    .ws-plan-to-watch { color: $color-accent; }
+    .ws-on-hold { color: $accent-gold; }
+    .rec-must-watch { color: #5ea87a; }
+    .rec-highly-recommended { color: $color-accent; }
+    .rec-recommended { color: #5e8a9f; }
+    .rec-mixed-feelings { color: $accent-gold; }
+    .rec-not-recommended { color: #bf5e5e; }
+}
+
+// ─── Entertainment Detail Page ───
+.entertainment-detail-page {
+    padding: 3rem 0;
+}
+
+.back-link {
+    display: inline-block;
+    color: $color-accent;
+    font-size: 0.9rem;
+    text-decoration: none;
+    margin-bottom: 1.5rem;
+    font-family: $font-ui;
+    &:hover { text-decoration: underline; }
+}
+
+.entertainment-detail {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.entertainment-detail-cover {
+    position: relative;
+    width: 100%;
+    max-height: 420px;
+    overflow: hidden;
+    border-radius: $radius-md;
+    border: 1px solid $color-border;
+    margin-bottom: 1.5rem;
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .spoiler-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+    }
+}
+
+// YouTube video embed on detail page
+.entertainment-detail-video {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; // 16:9
+    margin-bottom: 1.5rem;
+    border-radius: $radius-md;
+    overflow: hidden;
+    border: 1px solid $color-border;
+    iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+}
+
+.entertainment-detail-header {
+    margin-bottom: 2rem;
+}
+
+.entertainment-detail-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.entertainment-detail-title {
+    font-family: $font-display;
+    color: $color-text-primary;
+    font-size: 2rem;
+    margin: 0 0 0.75rem;
+    line-height: 1.2;
+}
+
+.entertainment-detail-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    color: $color-text-secondary;
+    font-family: $font-body;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+.detail-creator { font-style: italic; }
+.detail-year { color: $color-text-faint; }
+.detail-genre {
+    color: $color-text-faint;
+    &::before { content: '· '; }
+}
+
+.entertainment-detail-rating {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.rating-stars-lg {
+    display: flex;
+    gap: 3px;
+    .star {
+        font-size: 1.4rem;
+        color: $color-border;
+    }
+    .star.filled {
+        color: $accent-gold;
+    }
+}
+
+.rating-value {
+    font-family: $font-mono;
+    font-size: 1.1rem;
+    color: $color-text-secondary;
+}
+
+.entertainment-detail-audio {
+    margin-bottom: 2rem;
+    h3 {
+        font-family: $font-display;
+        color: $color-text-primary;
+        font-size: 1.1rem;
+        margin: 0 0 0.5rem;
+    }
+    audio {
+        width: 100%;
+        height: 42px;
+    }
+}
+
+.entertainment-detail-review {
+    margin-bottom: 2rem;
+    h3 {
+        font-family: $font-display;
+        color: $color-text-primary;
+        font-size: 1.1rem;
+        margin: 0 0 0.75rem;
+    }
+}
+
+.review-body {
+    color: $color-text-secondary;
+    font-family: $font-body;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+
+.entertainment-detail-footer {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid $color-border;
+}
+
+.btn-external {
+    display: inline-block;
+    padding: 0.5rem 1.2rem;
+    background: $color-bg-surface;
+    border: 1px solid $color-accent-dim;
+    border-radius: $radius-md;
+    color: $color-accent;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: border-color 0.2s, background 0.2s;
+    &:hover {
+        border-color: $color-accent;
+        background: rgba($color-accent, 0.08);
+    }
+}
+
+.featured-tag {
+    color: $accent-gold;
+    font-size: 0.85rem;
+    font-weight: 600;
 }
 
 .thought-modal-content::-webkit-scrollbar {

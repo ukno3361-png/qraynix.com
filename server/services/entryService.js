@@ -46,6 +46,10 @@ const createEntryService = () => {
     const create = ({ title, content = '', content_html = '', excerpt = '', status = 'draft', ...rest }) => {
         const db = getDb();
         let slug = slugify(title);
+        const normalizedStatus = ['draft', 'published', 'private'].includes(status) ? status : 'draft';
+        const publishedAt = normalizedStatus === 'published'
+            ? (rest.published_at ? new Date(rest.published_at).toISOString() : new Date().toISOString())
+            : null;
 
         // Ensure unique slug
         const existing = db.prepare('SELECT id FROM entries WHERE slug = ?').get(slug);
@@ -59,14 +63,12 @@ const createEntryService = () => {
         cover_image, featured, mood, location, weather, word_count, read_time, published_at)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
-            title, slug, content, content_html, excerpt, status,
+                        title, slug, content, content_html, excerpt, normalizedStatus,
             normalizeCoverImage(rest.cover_image), rest.featured ? 1 : 0,
             rest.mood || null, rest.location || null, rest.weather || null,
                         wc,
                         rt,
-                        rest.published_at
-                                ? new Date(rest.published_at).toISOString()
-                                : (status === 'published' ? new Date().toISOString() : null)
+                                                publishedAt
         );
 
         return getById(result.lastInsertRowid);
@@ -148,6 +150,12 @@ const createEntryService = () => {
             'cover_image', 'featured', 'mood', 'location', 'weather', 'published_at',
         ];
         const normalizedPatch = { ...patch };
+        if (Object.prototype.hasOwnProperty.call(patch, 'status')) {
+            normalizedPatch.status = ['draft', 'published', 'private'].includes(patch.status) ? patch.status : 'draft';
+            if (normalizedPatch.status !== 'published') {
+                normalizedPatch.published_at = null;
+            }
+        }
         if (Object.prototype.hasOwnProperty.call(patch, 'cover_image')) {
             normalizedPatch.cover_image = normalizeCoverImage(patch.cover_image);
         }
@@ -163,7 +171,7 @@ const createEntryService = () => {
         }
 
         // Auto-set published_at when publishing
-        if (patch.status === 'published') {
+        if (normalizedPatch.status === 'published' && normalizedPatch.published_at === undefined) {
             const existing = db.prepare('SELECT published_at FROM entries WHERE id = ?').get(id);
             if (!existing?.published_at) {
                 updates.push(['published_at', new Date().toISOString()]);

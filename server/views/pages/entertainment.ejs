@@ -1,0 +1,89 @@
+<%# Entertainment Page — reviews & ratings grid %>
+<div class="container entertainment-page">
+    <h1 class="section-heading">Entertainment</h1>
+    <p class="entertainment-sub">Reviews, ratings, and thoughts on movies, TV shows, music, games, and more.</p>
+
+    <% if (reviews.length > 0) { %>
+        <%
+            const types = [...new Set(reviews.map(r => r.type))].sort();
+            const filtered = filterType === 'all' ? reviews : reviews.filter(r => r.type === filterType);
+        %>
+
+        <div class="entertainment-filters">
+            <a href="/entertainment" class="filter-chip <%= filterType === 'all' ? 'active' : '' %>">All</a>
+            <% types.forEach(t => { %>
+                <a href="/entertainment?type=<%= encodeURIComponent(t) %>" class="filter-chip <%= filterType === t ? 'active' : '' %>"><%= t %></a>
+            <% }) %>
+        </div>
+
+        <div class="entertainment-grid">
+            <% filtered.forEach(review => { %>
+                <a href="/entertainment/<%= review.id %>" class="entertainment-card <%= review.featured ? 'featured' : '' %>">
+                    <%
+                        // Extract YouTube video ID if applicable
+                        let ytId = null;
+                        if (review.type === 'YouTube' && review.external_link) {
+                            const m = review.external_link.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+                            if (m) ytId = m[1];
+                        }
+                    %>
+                    <% if (ytId) { %>
+                        <div class="entertainment-cover yt-cover">
+                            <img src="https://img.youtube.com/vi/<%= ytId %>/hqdefault.jpg" alt="<%= review.title %>" loading="lazy">
+                            <span class="yt-play-overlay">▶</span>
+                            <% if (review.has_spoilers) { %>
+                                <span class="spoiler-badge">⚠ Spoilers</span>
+                            <% } %>
+                        </div>
+                    <% } else if (review.cover_image) { %>
+                        <div class="entertainment-cover">
+                            <img src="<%= review.cover_image %>" alt="<%= review.title %>" loading="lazy">
+                            <% if (review.has_spoilers) { %>
+                                <span class="spoiler-badge">⚠ Spoilers</span>
+                            <% } %>
+                        </div>
+                    <% } %>
+
+                    <div class="entertainment-card-body">
+                        <div class="entertainment-card-meta">
+                            <span class="entertainment-type-badge"><%= review.type %></span>
+                            <span class="entertainment-rating">
+                                <% for (let i = 1; i <= 10; i++) { %>
+                                    <span class="star <%= i <= review.rating ? 'filled' : '' %>">★</span>
+                                <% } %>
+                                <span class="rating-num"><%= review.rating %>/10</span>
+                            </span>
+                        </div>
+
+                        <h3 class="entertainment-card-title"><%= review.title %></h3>
+
+                        <% if (review.creator) { %>
+                            <div class="entertainment-creator">by <%= review.creator %></div>
+                        <% } %>
+
+                        <% if (review.genre) { %>
+                            <div class="entertainment-genre"><%= review.genre %></div>
+                        <% } %>
+
+                        <div class="entertainment-status-row">
+                            <span class="watch-status-badge ws-<%= review.watch_status.toLowerCase().replace(/ /g, '-') %>"><%= review.watch_status %></span>
+                            <% if (review.release_year) { %>
+                                <span class="entertainment-year"><%= review.release_year %></span>
+                            <% } %>
+                        </div>
+
+                        <span class="recommendation-badge rec-<%= review.recommendation_level.toLowerCase().replace(/ /g, '-') %>"><%= review.recommendation_level %></span>
+
+                        <% if (review.review_html) { %>
+                            <div class="entertainment-review-text"><%- review.review_html %></div>
+                        <% } %>
+                    </div>
+                </a>
+            <% }) %>
+        </div>
+    <% } else { %>
+        <div class="empty-notice">
+            <p>No reviews published yet. Check back soon!</p>
+        </div>
+    <% } %>
+</div>

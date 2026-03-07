@@ -16,45 +16,57 @@
                         <li><a href="/timeline" data-rune="ᛏ"
                                 class="nav-link <%= typeof currentPath !== 'undefined' && currentPath === '/timeline' ? 'active' : '' %>">Timeline</a>
                         </li>
-                        <% } %>
-                            <% if (typeof settings==='undefined' || settings.show_now !=='false' ) { %>
-                                <li><a href="/now" data-rune="ᚾ"
-                                        class="nav-link <%= typeof currentPath !== 'undefined' && currentPath === '/now' ? 'active' : '' %>">Now</a>
+                    <% } %>
+                    <% if (typeof settings==='undefined' || settings.show_now !=='false' ) { %>
+                        <li><a href="/now" data-rune="ᚾ"
+                                class="nav-link <%= typeof currentPath !== 'undefined' && currentPath === '/now' ? 'active' : '' %>">Now</a>
+                        </li>
+                    <% } %>
+                    <% if (typeof settings==='undefined' || settings.show_music !=='false' ) { %>
+                        <li><a href="/music" data-rune="ᛗ"
+                                class="nav-link <%= typeof currentPath !== 'undefined' && currentPath === '/music' ? 'active' : '' %>">Music</a>
+                        </li>
+                    <% } %>
+                    <% if (typeof settings==='undefined' || settings.show_entertainment !=='false' ) { %>
+                        <li><a href="/entertainment" data-rune="ᛊ"
+                                class="nav-link <%= typeof currentPath !== 'undefined' && currentPath === '/entertainment' ? 'active' : '' %>">Entertainment</a>
+                        </li>
+                    <% } %>
+                    <li><a href="/thought-flash" data-rune="ᛃ"
+                            class="nav-link <%= typeof currentPath !== 'undefined' && currentPath === '/thought-flash' ? 'active' : '' %>">Thought Flash</a>
+                    </li>
+
+                    <%# "More" dropdown for secondary pages %>
+                    <li class="nav-more-wrap">
+                        <button class="nav-link nav-more-btn" data-rune="ᛜ" type="button" aria-expanded="false">More ▾</button>
+                        <ul class="nav-more-dropdown">
+                            <% if (typeof settings==='undefined' || settings.show_habits !=='false' ) { %>
+                                <li><a href="/habit-tracker"
+                                    class="nav-link <%= typeof currentPath !== 'undefined' && currentPath === '/habit-tracker' ? 'active' : '' %>">Habits</a>
                                 </li>
-                                <% } %>
-                                    <% if (typeof settings==='undefined' || settings.show_habits !=='false' ) { %>
-                                        <li><a href="/habit-tracker" data-rune="ᚺ"
-                                            class="nav-link <%= typeof currentPath !== 'undefined' && currentPath === '/habit-tracker' ? 'active' : '' %>">Habits</a>
-                                        </li>
-                                    <% } %>
-                                    <% if (typeof settings==='undefined' || settings.show_music !=='false' ) { %>
-                                        <li><a href="/music" data-rune="ᛗ"
-                                            class="nav-link <%= typeof currentPath !== 'undefined' && currentPath === '/music' ? 'active' : '' %>">Music</a>
-                                        </li>
-                                    <% } %>
-                                    <% if (typeof settings==='undefined' || settings.show_future !=='false' ) { %>
-                                        <li><a href="/future" data-rune="ᚢ"
-                                            class="nav-link <%= typeof currentPath !== 'undefined' && currentPath === '/future' ? 'active' : '' %>">Future</a>
-                                        </li>
-                                    <% } %>
-                                    <li><a href="/thought-flash" data-rune="ᛃ"
-                                        class="nav-link <%= typeof currentPath !== 'undefined' && currentPath === '/thought-flash' ? 'active' : '' %>">Thought Flash</a>
-                                    </li>
-                                    <% if (typeof settings==='undefined' || settings.show_livecam !=='false' ) { %>
-                                        <li><a href="/live-cam" data-rune="ᛚ"
-                                            class="nav-link <%= typeof currentPath !== 'undefined' && currentPath === '/live-cam' ? 'active' : '' %>">Live Cam</a>
-                                        </li>
-                                    <% } %>
-                                    <% if (typeof settings==='undefined' || settings.show_health !=='false' ) { %>
-                                        <li><a href="/health" data-rune="ᛇ"
-                                            class="nav-link <%= typeof currentPath !== 'undefined' && currentPath === '/health' ? 'active' : '' %>">Health</a>
-                                        </li>
-                                    <% } %>
-                                    <% if (typeof currentUser !=='undefined' && currentUser) { %>
-                                        <li><a href="/admin" data-rune="ᛞ" class="nav-link">Dashboard</a></li>
-                                        <% } else { %>
-                                            <li><a href="/login" data-rune="ᛜ" class="nav-link">Login</a></li>
-                                            <% } %>
+                            <% } %>
+                            <% if (typeof settings==='undefined' || settings.show_future !=='false' ) { %>
+                                <li><a href="/future"
+                                    class="nav-link <%= typeof currentPath !== 'undefined' && currentPath === '/future' ? 'active' : '' %>">Future</a>
+                                </li>
+                            <% } %>
+                            <% if (typeof settings==='undefined' || settings.show_livecam !=='false' ) { %>
+                                <li><a href="/live-cam"
+                                    class="nav-link <%= typeof currentPath !== 'undefined' && currentPath === '/live-cam' ? 'active' : '' %>">Live Cam</a>
+                                </li>
+                            <% } %>
+                            <% if (typeof settings==='undefined' || settings.show_health !=='false' ) { %>
+                                <li><a href="/health"
+                                    class="nav-link <%= typeof currentPath !== 'undefined' && currentPath === '/health' ? 'active' : '' %>">Health</a>
+                                </li>
+                            <% } %>
+                            <% if (typeof currentUser !=='undefined' && currentUser) { %>
+                                <li><a href="/admin" class="nav-link">Dashboard</a></li>
+                            <% } else { %>
+                                <li><a href="/login" class="nav-link">Login</a></li>
+                            <% } %>
+                        </ul>
+                    </li>
                 </ul>
             </nav>
 

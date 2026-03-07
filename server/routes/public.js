@@ -200,6 +200,44 @@ const createPublicRouter = (services) => {
         });
     });
 
+    // GET /entertainment
+    router.get('/entertainment', (req, res, next) => {
+        const settings = services.settings.getAll();
+        if (!pageEnabled(settings, 'show_entertainment')) return rejectHiddenPage(next, 'Entertainment');
+
+        const { reviews } = services.entertainment.list({ status: 'published', limit: 50 });
+        const type = req.query.type || 'all';
+
+        res.render('pages/entertainment', {
+            title: `Entertainment | ${settings.site_title}`,
+            settings,
+            reviews,
+            filterType: type,
+        });
+    });
+
+    // GET /entertainment/:id — Single review
+    router.get('/entertainment/:id', (req, res, next) => {
+        const settings = services.settings.getAll();
+        if (!pageEnabled(settings, 'show_entertainment')) return rejectHiddenPage(next, 'Entertainment');
+
+        const id = parseInt(req.params.id, 10);
+        if (!id || isNaN(id)) return next();
+
+        const review = services.entertainment.getById(id);
+        if (!review || review.status !== 'published') {
+            const err = new Error('Review not found');
+            err.status = 404;
+            return next(err);
+        }
+
+        res.render('pages/entertainmentDetail', {
+            title: `${review.title} | Entertainment | ${settings.site_title}`,
+            settings,
+            review,
+        });
+    });
+
     // GET /thought-flash
     router.get('/thought-flash', (req, res) => {
         const settings = services.settings.getAll();

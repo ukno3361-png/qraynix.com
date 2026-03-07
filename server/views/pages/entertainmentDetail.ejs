@@ -1,0 +1,92 @@
+<%# Entertainment Detail Page — single review %>
+<div class="container entertainment-detail-page">
+    <a href="/entertainment" class="back-link">← Back to Entertainment</a>
+
+    <article class="entertainment-detail">
+        <%
+            // Extract YouTube video ID if applicable
+            let ytId = null;
+            if (review.type === 'YouTube' && review.external_link) {
+                const m = review.external_link.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+                if (m) ytId = m[1];
+            }
+        %>
+
+        <% if (ytId) { %>
+            <div class="entertainment-detail-video">
+                <iframe
+                    src="https://www.youtube.com/embed/<%= ytId %>?autoplay=1"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen title="<%= review.title %>">
+                </iframe>
+            </div>
+        <% } else if (review.cover_image) { %>
+            <div class="entertainment-detail-cover">
+                <img src="<%= review.cover_image %>" alt="<%= review.title %>">
+                <% if (review.has_spoilers) { %>
+                    <span class="spoiler-badge">⚠ Contains Spoilers</span>
+                <% } %>
+            </div>
+        <% } %>
+
+        <div class="entertainment-detail-header">
+            <div class="entertainment-detail-meta">
+                <span class="entertainment-type-badge"><%= review.type %></span>
+                <span class="watch-status-badge ws-<%= review.watch_status.toLowerCase().replace(/ /g, '-') %>"><%= review.watch_status %></span>
+                <span class="recommendation-badge rec-<%= review.recommendation_level.toLowerCase().replace(/ /g, '-') %>"><%= review.recommendation_level %></span>
+            </div>
+
+            <h1 class="entertainment-detail-title"><%= review.title %></h1>
+
+            <div class="entertainment-detail-info">
+                <% if (review.creator) { %>
+                    <span class="detail-creator">by <strong><%= review.creator %></strong></span>
+                <% } %>
+                <% if (review.release_year) { %>
+                    <span class="detail-year"><%= review.release_year %></span>
+                <% } %>
+                <% if (review.genre) { %>
+                    <span class="detail-genre"><%= review.genre %></span>
+                <% } %>
+            </div>
+
+            <div class="entertainment-detail-rating">
+                <div class="rating-stars-lg">
+                    <% for (let i = 1; i <= 10; i++) { %>
+                        <span class="star <%= i <= review.rating ? 'filled' : '' %>">★</span>
+                    <% } %>
+                </div>
+                <span class="rating-value"><%= review.rating %> / 10</span>
+            </div>
+        </div>
+
+        <% if (review.audio_preview_url) { %>
+            <div class="entertainment-detail-audio">
+                <h3>Audio Preview</h3>
+                <audio controls autoplay preload="auto" id="entertainment-audio">
+                    <source src="<%= review.audio_preview_url %>" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    var audio = document.getElementById('entertainment-audio');
+                    if (audio) audio.play().catch(function() {});
+                });
+            </script>
+        <% } %>
+
+        <% if (review.review_html) { %>
+            <div class="entertainment-detail-review">
+                <h3>Review</h3>
+                <div class="review-body"><%- review.review_html %></div>
+            </div>
+        <% } %>
+
+        <% if (review.featured) { %>
+            <div class="entertainment-detail-footer">
+                <span class="featured-tag">★ Featured Review</span>
+            </div>
+        <% } %>
+    </article>
+</div>

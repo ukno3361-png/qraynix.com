@@ -173,6 +173,23 @@ export const thoughtFlash = {
     reorder: (items) => request(`${API_BASE}/thought-flash/reorder`, { method: 'POST', body: JSON.stringify({ items }) }),
 };
 
+// ── Entertainment ──
+export const entertainment = {
+    list: (params = {}) => {
+        const qs = new URLSearchParams(params).toString();
+        return request(`${API_BASE}/entertainment${qs ? '?' + qs : ''}`);
+    },
+    get: (id) => request(`${API_BASE}/entertainment/${id}`),
+    create: (data) => request(`${API_BASE}/entertainment`, { method: 'POST', body: JSON.stringify(data) }),
+    update: (id, data) => request(`${API_BASE}/entertainment/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
+    remove: (id) => request(`${API_BASE}/entertainment/${id}`, { method: 'DELETE' }),
+    stats: () => request(`${API_BASE}/entertainment/stats`),
+    itunesSearch: (term, media = 'music', limit = 5) => {
+        const qs = new URLSearchParams({ term, media, limit: String(limit) }).toString();
+        return request(`${API_BASE}/entertainment/itunes-search?${qs}`);
+    },
+};
+
 // ── Account ──
 export const account = {
     get: () => request(`${API_BASE}/account`),
@@ -195,6 +212,14 @@ export const settings = {
 // ── Assistant ──
 export const assistant = {
     testConnection: (data) => request(`${API_BASE}/assistant/test`, { method: 'POST', body: JSON.stringify(data) }),
+};
+
+// ── DB Tools ──
+export const dbTools = {
+    status: () => request(`${API_BASE}/db-tools/status`),
+    files: () => request(`${API_BASE}/db-tools/files`),
+    cloneMigrate: (data) => request(`${API_BASE}/db-tools/clone-migrate`, { method: 'POST', body: JSON.stringify(data) }),
+    migrateInPlace: (data) => request(`${API_BASE}/db-tools/migrate-in-place`, { method: 'POST', body: JSON.stringify(data) }),
 };
 
 // ── Search ──

@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Option 4 — Ink & Stone</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;600&family=IBM+Plex+Sans:wght@200;300;400;500&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-primary: #1a1816;
+      --bg-secondary: #141210;
+      --bg-card: #1e1c19;
+      --bg-surface: #242220;
+      --bg-ink: #0e0d0b;
+      --text-primary: #d4cdc0;
+      --text-secondary: #8a8278;
+      --text-muted: #5a554e;
+      --gold: #c9a84c;
+      --gold-dim: #8a7434;
+      --rust: #a0522d;
+      --sage: #6b7a60;
+      --ink: #2a2622;
+      --border: #2e2a26;
+      --border-light: #3a352e;
+      --serif-jp: 'Noto Serif JP', 'Georgia', serif;
+      --sans: 'IBM Plex Sans', system-ui, sans-serif;
+      --sans-jp: 'Noto Sans JP', system-ui, sans-serif;
+    }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+    }
+
+    .back-link {
+      position: fixed; top: 16px; left: 16px; z-index: 100;
+      color: var(--gold); text-decoration: none; font-size: 0.8rem;
+      background: var(--bg-card); padding: 6px 14px; border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+    .back-link:hover { background: var(--gold); color: var(--bg-primary); }
+
+    .section-label {
+      text-align: center; padding: 48px 20px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-label h2 {
+      font-family: var(--serif-jp);
+      font-size: 1.3rem;
+      color: var(--gold);
+      font-weight: 300;
+      letter-spacing: 0.2em;
+    }
+    .section-label p {
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      margin-top: 6px;
+      letter-spacing: 0.05em;
+    }
+
+    /* ═══════════════════════════════════════
+       TEXTURES
+    ═══════════════════════════════════════ */
+    .ink-wash {
+      position: relative;
+    }
+
+    .ink-wash::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: 
+        radial-gradient(ellipse at 20% 50%, rgba(42,38,34,0.6) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 30%, rgba(42,38,34,0.4) 0%, transparent 40%);
+      pointer-events: none;
+    }
+
+    /* ═══════════════════════════════════════
+       PUBLIC SITE
+    ═══════════════════════════════════════ */
+    .pub { background: var(--bg-primary); }
+
+    .pub-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 48px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .pub-logo {
+      font-family: var(--serif-jp);
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .pub-logo .kanji {
+      font-size: 1.6rem;
+      color: var(--gold);
+      font-weight: 300;
+    }
+
+    .pub-nav { display: flex; gap: 32px; list-style: none; }
+
+    .pub-nav a {
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      font-weight: 300;
+      transition: color 0.3s;
+      position: relative;
+    }
+
+    .pub-nav a:hover { color: var(--text-secondary); }
+
+    .pub-nav a.active {
+      color: var(--gold);
+    }
+
+    .pub-nav a.active::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0; right: 0;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    /* Hero — asymmetric */
+    .pub-hero {
+      display: grid;
+      grid-template-columns: 1fr 120px;
+      gap: 40px;
+      padding: 80px 48px;
+      max-width: 900px;
+      position: relative;
+    }
+
+    .pub-hero-text h1 {
+      font-family: var(--serif-jp);
+      font-size: 2.4rem;
+      font-weight: 300;
+      line-height: 1.4;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+
+    .pub-hero-text .tagline {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      font-weight: 200;
+      letter-spacing: 0.04em;
+    }
+
+    .pub-hero-vertical {
+      writing-mode: vertical-rl;
+      font-family: var(--serif-jp);
+      font-size: 1.4rem;
+      color: var(--text-muted);
+      font-weight: 300;
+      letter-spacing: 0.3em;
+      opacity: 0.4;
+      padding-top: 10px;
+    }
+
+    /* Entries — asymmetric stagger */
+    .pub-entries {
+      max-width: 900px;
+      padding: 40px 48px;
+    }
+
+    .pub-entry {
+      display: grid;
+      grid-template-columns: 100px 1fr;
+      gap: 32px;
+      padding: 32px 0;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+
+    .pub-entry:nth-child(even) {
+      padding-left: 60px;
+    }
+
+    .pub-entry-date {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 300;
+      letter-spacing: 0.05em;
+      padding-top: 4px;
+    }
+
+    .pub-entry-date .day {
+      font-family: var(--serif-jp);
+      font-size: 2rem;
+      font-weight: 300;
+      color: var(--text-secondary);
+      display: block;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .pub-entry-content h3 {
+      font-family: var(--serif-jp);
+      font-size: 1.2rem;
+      font-weight: 400;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    .pub-entry-content p {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    .pub-entry-tags {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .pub-tag {
+      font-size: 0.68rem;
+      color: var(--gold-dim);
+      letter-spacing: 0.05em;
+    }
+    .pub-tag::before { content: '— '; }
+
+    /* Ink circle decoration */
+    .pub-entry::before {
+      content: '';
+      position: absolute;
+      left: 116px;
+      top: 40px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+      opacity: 0.5;
+    }
+
+    /* Now section */
+    .pub-now {
+      max-width: 900px;
+      padding: 40px 48px 60px;
+    }
+
+    .pub-now-title {
+      font-family: var(--serif-jp);
+      font-size: 1.3rem;
+      font-weight: 300;
+      color: var(--text-primary);
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .pub-now-title .circle {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--gold);
+      opacity: 0.6;
+    }
+
+    .pub-now-blocks {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+
+    .pub-now-block {
+      padding: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .pub-now-block:nth-child(odd) {
+      border-right: 1px solid var(--border);
+    }
+
+    .pub-now-block h4 {
+      font-family: var(--serif-jp);
+      font-size: 0.9rem;
+      font-weight: 400;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+
+    .pub-now-block p {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      font-weight: 300;
+    }
+
+    /* Haiku-style divider */
+    .haiku-divider {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-muted);
+      font-family: var(--serif-jp);
+      font-size: 0.85rem;
+      font-weight: 300;
+      line-height: 2;
+      opacity: 0.5;
+    }
+
+    /* ═══════════════════════════════════════
+       EDITOR
+    ═══════════════════════════════════════ */
+    .editor-section { background: var(--bg-secondary); }
+
+    .editor-layout {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px;
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 20px;
+    }
+
+    .editor-sidebar {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 20px;
+    }
+
+    .editor-sidebar-logo {
+      font-family: var(--serif-jp);
+      font-size: 1rem;
+      font-weight: 400;
+      margin-bottom: 6px;
+    }
+
+    .editor-sidebar-sub {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .editor-nav-section {
+      font-size: 0.62rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin: 16px 0 8px;
+    }
+
+    .editor-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 12px;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 1px;
+      font-weight: 300;
+      border-left: 2px solid transparent;
+    }
+
+    .editor-nav-item:hover {
+      color: var(--text-primary);
+      background: rgba(201,168,76,0.04);
+    }
+
+    .editor-nav-item.active {
+      color: var(--gold);
+      border-left-color: var(--gold);
+      background: rgba(201,168,76,0.06);
+    }
+
+    .editor-nav-icon { width: 16px; text-align: center; font-size: 0.8rem; }
+
+    .editor-main {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .editor-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .editor-topbar h3 {
+      font-family: var(--serif-jp);
+      font-size: 0.9rem;
+      font-weight: 400;
+      color: var(--text-secondary);
+    }
+
+    .editor-actions { display: flex; gap: 8px; }
+
+    .btn {
+      padding: 6px 16px;
+      border-radius: 3px;
+      border: 1px solid var(--border);
+      background: transparent;
+      font-size: 0.78rem;
+      cursor: pointer;
+      color: var(--text-secondary);
+      font-family: var(--sans);
+      font-weight: 300;
+      transition: all 0.2s;
+    }
+    .btn:hover { border-color: var(--gold-dim); color: var(--text-primary); }
+
+    .btn-primary {
+      background: var(--gold);
+      color: var(--bg-primary);
+      border-color: var(--gold);
+      font-weight: 400;
+    }
+    .btn-primary:hover { background: #d4b35a; }
+
+    /* Toolbar — minimal */
+    .editor-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      padding: 8px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .toolbar-btn {
+      width: 30px; height: 30px;
+      display: flex; align-items: center; justify-content: center;
+      border: none; background: none;
+      cursor: pointer; border-radius: 3px;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      transition: all 0.15s;
+    }
+
+    .toolbar-btn:hover { color: var(--text-secondary); }
+    .toolbar-btn.active { color: var(--gold); }
+
+    .toolbar-sep {
+      width: 1px; height: 16px;
+      background: var(--border);
+      margin: 0 10px;
+    }
+
+    /* Writing area — zen */
+    .editor-content {
+      padding: 40px 56px;
+      min-height: 420px;
+    }
+
+    .editor-content .title-input {
+      font-family: var(--serif-jp);
+      font-size: 1.6rem;
+      font-weight: 400;
+      border: none; outline: none;
+      width: 100%;
+      color: var(--text-primary);
+      background: transparent;
+      margin-bottom: 8px;
+      letter-spacing: 0.02em;
+    }
+
+    .editor-content .date-line {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 300;
+      margin-bottom: 32px;
+      letter-spacing: 0.05em;
+    }
+
+    .editor-content .body-text {
+      font-family: var(--sans);
+      font-size: 0.92rem;
+      line-height: 1.9;
+      color: var(--text-secondary);
+      font-weight: 300;
+    }
+
+    .editor-content .body-text p { margin-bottom: 20px; }
+
+    .editor-content .body-text .emphasis {
+      color: var(--gold);
+      font-style: italic;
+    }
+
+    .editor-content .body-text .indent {
+      margin-left: 40px;
+      border-left: 2px solid var(--border);
+      padding-left: 20px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* Meta */
+    .editor-meta {
+      border-top: 1px solid var(--border);
+      padding: 16px 24px;
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .meta-field label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 3px;
+      font-weight: 300;
+    }
+
+    .meta-field input, .meta-field select {
+      padding: 5px 10px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      font-size: 0.8rem;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--sans);
+      font-weight: 300;
+    }
+
+    .meta-field input:focus {
+      border-color: var(--gold-dim);
+      outline: none;
+    }
+
+    /* ─── Design notes ─── */
+    .design-notes {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 60px 48px;
+    }
+
+    .design-notes h3 {
+      font-family: var(--serif-jp);
+      font-size: 1.3rem;
+      font-weight: 300;
+      margin-bottom: 24px;
+      color: var(--text-primary);
+    }
+
+    .notes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .note-card {
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--bg-card);
+    }
+
+    .note-card h4 {
+      font-family: var(--serif-jp);
+      font-size: 0.9rem;
+      font-weight: 400;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+
+    .note-card p {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      font-weight: 300;
+    }
+
+    @media (max-width: 768px) {
+      .editor-layout { grid-template-columns: 1fr; }
+      .pub-header { flex-direction: column; gap: 16px; padding: 20px 24px; }
+      .pub-hero { grid-template-columns: 1fr; padding: 40px 24px; }
+      .pub-hero-vertical { display: none; }
+      .pub-entries { padding: 20px 24px; }
+      .pub-entry { grid-template-columns: 1fr; gap: 8px; }
+      .pub-entry:nth-child(even) { padding-left: 0; }
+      .pub-now-blocks { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <a href="../index.html" class="back-link">← Back</a>
+
+  <!-- ═══════════ PUBLIC SITE ═══════════ -->
+  <div class="section-label">
+    <h2>墨と石 — INK & STONE</h2>
+    <p>Wabi-sabi minimalism · ink-wash texture · zen-like whitespace</p>
+  </div>
+
+  <div class="pub ink-wash">
+    <header class="pub-header">
+      <div class="pub-logo">
+        <span class="kanji">風</span> Qraynix
+      </div>
+      <nav>
+        <ul class="pub-nav">
+          <li><a href="#" class="active">Journal</a></li>
+          <li><a href="#">Timeline</a></li>
+          <li><a href="#">Now</a></li>
+          <li><a href="#">Music</a></li>
+          <li><a href="#">Habits</a></li>
+          <li><a href="#">Thoughts</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <section class="pub-hero">
+      <div class="pub-hero-text">
+        <h1>Imperfect words, weathered with meaning</h1>
+        <div class="tagline">A journal that embraces the cracks in understanding</div>
+      </div>
+      <div class="pub-hero-vertical">侘寂の美</div>
+    </section>
+
+    <section class="pub-entries">
+      <div class="pub-entry">
+        <div class="pub-entry-date">
+          <span class="day">05</span>
+          March 2026
+        </div>
+        <div class="pub-entry-content">
+          <h3>The weight of unfinished thoughts</h3>
+          <p>Some ideas are like river stones — shaped not by intent but by constant gentle pressure. You carry them in your pocket, turning them over, and one day they feel smooth enough to share.</p>
+          <div class="pub-entry-tags">
+            <span class="pub-tag">reflection</span>
+            <span class="pub-tag">patience</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-entry">
+        <div class="pub-entry-date">
+          <span class="day">01</span>
+          March 2026
+        </div>
+        <div class="pub-entry-content">
+          <h3>Morning tea and empty pages</h3>
+          <p>The blank page isn't intimidating when you understand that emptiness is not absence. It's potential. Like the pause between notes that makes music breathe.</p>
+          <div class="pub-entry-tags">
+            <span class="pub-tag">morning</span>
+            <span class="pub-tag">writing</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-entry">
+        <div class="pub-entry-date">
+          <span class="day">25</span>
+          February 2026
+        </div>
+        <div class="pub-entry-content">
+          <h3>Architecture of simple things</h3>
+          <p>A wooden joint, a clay bowl, a well-placed stone. The best design doesn't announce itself. It just works, quietly, like a door that swings on good hinges.</p>
+          <div class="pub-entry-tags">
+            <span class="pub-tag">design</span>
+            <span class="pub-tag">simplicity</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="haiku-divider">
+      ink meets paper —<br>
+      words settle like winter snow<br>
+      meaning finds its shape
+    </div>
+
+    <section class="pub-now">
+      <div class="pub-now-title">
+        <span class="circle"></span> What I'm doing now
+      </div>
+      <div class="pub-now-blocks">
+        <div class="pub-now-block">
+          <h4>Building</h4>
+          <p>A site that feels like a stone garden — every element placed with deliberate simplicity.</p>
+        </div>
+        <div class="pub-now-block">
+          <h4>Reading</h4>
+          <p>"In Praise of Shadows" by Junichiro Tanizaki. On beauty in darkness and subtlety.</p>
+        </div>
+        <div class="pub-now-block">
+          <h4>Listening</h4>
+          <p>Ryuichi Sakamoto, ambient koto recordings, and the sound of rain on tile.</p>
+        </div>
+        <div class="pub-now-block">
+          <h4>Practicing</h4>
+          <p>Calligraphy and patience. They are the same practice.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ═══════════ EDITOR ═══════════ -->
+  <div class="section-label" style="background: var(--bg-secondary);">
+    <h2>墨と石 — TEXT EDITOR</h2>
+    <p>Minimal zen-like writing environment with maximal whitespace</p>
+  </div>
+
+  <div class="editor-section">
+    <div class="editor-layout">
+      <aside class="editor-sidebar">
+        <div class="editor-sidebar-logo">Qraynix</div>
+        <div class="editor-sidebar-sub">管理画面</div>
+        <div class="editor-nav-section">Main</div>
+        <div class="editor-nav-item active"><span class="editor-nav-icon">◉</span> Dashboard</div>
+        <div class="editor-nav-section">Content</div>
+        <div class="editor-nav-item"><span class="editor-nav-icon">筆</span> Entries</div>
+        <div class="editor-nav-item"><span class="editor-nav-icon">今</span> Now</div>
+        <div class="editor-nav-item"><span class="editor-nav-icon">時</span> Timeline</div>
+        <div class="editor-nav-item"><span class="editor-nav-icon">音</span> Music</div>
+        <div class="editor-nav-item"><span class="editor-nav-icon">習</span> Habits</div>
+        <div class="editor-nav-item"><span class="editor-nav-icon">想</span> Thoughts</div>
+        <div class="editor-nav-section">System</div>
+        <div class="editor-nav-item"><span class="editor-nav-icon">⚙</span> Settings</div>
+        <div class="editor-nav-item"><span class="editor-nav-icon">◊</span> Analytics</div>
+      </aside>
+
+      <main class="editor-main">
+        <div class="editor-topbar">
+          <h3>New Entry</h3>
+          <div class="editor-actions">
+            <button class="btn">Save Draft</button>
+            <button class="btn btn-primary">Publish</button>
+          </div>
+        </div>
+
+        <div class="editor-toolbar">
+          <button class="toolbar-btn active" title="Bold"><b>B</b></button>
+          <button class="toolbar-btn" title="Italic"><i>I</i></button>
+          <button class="toolbar-btn" title="Underline"><u>U</u></button>
+          <div class="toolbar-sep"></div>
+          <button class="toolbar-btn" title="H1">H1</button>
+          <button class="toolbar-btn" title="H2">H2</button>
+          <div class="toolbar-sep"></div>
+          <button class="toolbar-btn" title="List">•</button>
+          <button class="toolbar-btn" title="Quote">「</button>
+          <div class="toolbar-sep"></div>
+          <button class="toolbar-btn" title="Image">画</button>
+          <button class="toolbar-btn" title="Link">鏈</button>
+        </div>
+
+        <div class="editor-content">
+          <input class="title-input" value="The weight of unfinished thoughts" readonly>
+          <div class="date-line">March 5, 2026 · Draft</div>
+          <div class="body-text">
+            <p>Some ideas are like <span class="emphasis">river stones</span> — shaped not by intent but by constant gentle pressure. You carry them in your pocket, turning them over, and one day they feel smooth enough to share.</p>
+            <p class="indent">The crack in the bowl is not a flaw. It is the story the bowl tells. — Kintsugi proverb</p>
+            <p>I keep coming back to this idea that <span class="emphasis">imperfection is not failure</span>. It's proof of living. A perfectly written sentence has nowhere to go. A rough one invites you to sit with it, to turn it over, to polish it with your own understanding.</p>
+            <p>Maybe that's why journals work. They're not meant to be perfect. They're meant to be <span class="emphasis">true</span>.</p>
+          </div>
+        </div>
+
+        <div class="editor-meta">
+          <div class="meta-field">
+            <label>Status</label>
+            <select><option selected>Draft</option><option>Published</option></select>
+          </div>
+          <div class="meta-field">
+            <label>Mood</label>
+            <input type="text" value="contemplative">
+          </div>
+          <div class="meta-field">
+            <label>Tags</label>
+            <input type="text" value="reflection, patience">
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ═══════════ DESIGN NOTES ═══════════ -->
+  <div class="design-notes">
+    <h3>Design Rationale</h3>
+    <div class="notes-grid">
+      <div class="note-card">
+        <h4>Color Philosophy</h4>
+        <p>Warm dark palette inspired by charcoal, stone, and aged wood. Gold (#c9a84c) accent borrowed from current site but used more sparingly. Rust and sage as secondary tones.</p>
+      </div>
+      <div class="note-card">
+        <h4>Typography</h4>
+        <p><strong>Noto Serif JP</strong> for headings — Japanese typographic tradition. <strong>IBM Plex Sans</strong> at weight 200-300 for body — engineering precision meets lightness. Kanji characters as decorative nav icons.</p>
+      </div>
+      <div class="note-card">
+        <h4>Layout Shift</h4>
+        <p>Asymmetric balance: entries stagger left-right. Generous padding creates zen-like whitespace. Vertical text accent in hero. Grid-less "now" section uses simple 2-column borders.</p>
+      </div>
+      <div class="note-card">
+        <h4>Editor Changes</h4>
+        <p>Maximum whitespace in writing area. Left-border active state on nav (like a scroll marker). Minimal toolbar with kanji-inspired icons. Date line below title. Block quote styled as indented with left border.</p>
+      </div>
+      <div class="note-card">
+        <h4>Key Departure</h4>
+        <p>Strips away ornamentation entirely. No glow effects, no animations. Beauty in restraint. Every element earns its space. Haiku dividers between sections.</p>
+      </div>
+      <div class="note-card">
+        <h4>Wabi-sabi Principle</h4>
+        <p>Embraces imperfection. Cards don't have hover animations — the content speaks. Ink-wash textures (subtle radial gradients) suggest brushwork. Overall feel: a stone monastery's reading room.</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

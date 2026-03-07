@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Option 3 — Aurora Glass</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-primary: #080818;
+      --bg-glass: rgba(255,255,255,0.04);
+      --bg-glass-strong: rgba(255,255,255,0.07);
+      --text-primary: #f0eef5;
+      --text-secondary: #a8a0c0;
+      --text-muted: #5a5278;
+      --pink: #ff6ec7;
+      --purple: #7b68ee;
+      --cyan: #00d4ff;
+      --blue: #4a6cf7;
+      --border-glass: rgba(255,255,255,0.08);
+      --border-glow: rgba(123,104,238,0.3);
+      --serif: 'Playfair Display', Georgia, serif;
+      --sans: 'Inter', system-ui, sans-serif;
+    }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .back-link {
+      position: fixed; top: 16px; left: 16px; z-index: 100;
+      color: var(--purple); text-decoration: none; font-size: 0.82rem;
+      background: var(--bg-glass-strong); padding: 6px 14px; border-radius: 20px;
+      border: 1px solid var(--border-glass);
+      backdrop-filter: blur(20px);
+    }
+    .back-link:hover { background: var(--purple); color: #fff; }
+
+    .section-label {
+      text-align: center; padding: 48px 20px 24px;
+      border-bottom: 1px solid var(--border-glass);
+    }
+    .section-label h2 {
+      font-family: var(--sans);
+      font-size: 1.2rem;
+      font-weight: 300;
+      background: linear-gradient(90deg, var(--pink), var(--purple), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 0.08em;
+    }
+    .section-label p {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      margin-top: 6px;
+    }
+
+    /* ═══════════════════════════════════════
+       AURORA BACKGROUND
+    ═══════════════════════════════════════ */
+    .aurora-bg {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .aurora-bg::before {
+      content: '';
+      position: absolute;
+      top: -200px; left: -100px;
+      width: 600px; height: 600px;
+      background: radial-gradient(ellipse, rgba(123,104,238,0.15), transparent 70%);
+      animation: aurDrift1 12s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+
+    .aurora-bg::after {
+      content: '';
+      position: absolute;
+      top: -100px; right: -200px;
+      width: 500px; height: 500px;
+      background: radial-gradient(ellipse, rgba(255,110,199,0.1), transparent 70%);
+      animation: aurDrift2 15s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+
+    @keyframes aurDrift1 {
+      0% { transform: translate(0,0) scale(1); }
+      100% { transform: translate(80px, 40px) scale(1.1); }
+    }
+    @keyframes aurDrift2 {
+      0% { transform: translate(0,0) scale(1); }
+      100% { transform: translate(-60px, 30px) scale(1.15); }
+    }
+
+    /* ═══════════════════════════════════════
+       PUBLIC SITE
+    ═══════════════════════════════════════ */
+    .pub { position: relative; }
+
+    .pub-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 40px;
+      background: var(--bg-glass);
+      backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border-glass);
+      position: relative;
+      z-index: 10;
+    }
+
+    .pub-logo {
+      font-family: var(--serif);
+      font-size: 1.3rem;
+      font-weight: 400;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .pub-nav { display: flex; gap: 6px; list-style: none; }
+
+    .pub-nav a {
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-size: 0.82rem;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-weight: 300;
+      transition: all 0.25s;
+      border: 1px solid transparent;
+    }
+
+    .pub-nav a:hover {
+      background: var(--bg-glass);
+      border-color: var(--border-glass);
+    }
+
+    .pub-nav a.active {
+      background: var(--bg-glass-strong);
+      border-color: var(--border-glow);
+      color: var(--text-primary);
+      box-shadow: 0 0 20px rgba(123,104,238,0.1);
+    }
+
+    /* Hero */
+    .pub-hero {
+      text-align: center;
+      padding: 100px 40px 80px;
+      position: relative;
+      z-index: 5;
+    }
+
+    .pub-hero h1 {
+      font-family: var(--serif);
+      font-size: 3rem;
+      font-weight: 400;
+      line-height: 1.25;
+      max-width: 650px;
+      margin: 0 auto 20px;
+    }
+
+    .pub-hero h1 .gradient {
+      background: linear-gradient(135deg, var(--pink), var(--purple), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .pub-hero .tagline {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      font-weight: 200;
+      letter-spacing: 0.15em;
+    }
+
+    /* Glass cards */
+    .pub-entries {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+      position: relative;
+      z-index: 5;
+    }
+
+    .glass-card {
+      background: var(--bg-glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-glass);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.35s;
+      position: relative;
+    }
+
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--purple), var(--pink), transparent);
+      opacity: 0;
+      transition: opacity 0.35s;
+    }
+
+    .glass-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-glow);
+      box-shadow: 0 8px 40px rgba(123,104,238,0.12), 0 0 60px rgba(123,104,238,0.05);
+    }
+
+    .glass-card:hover::before { opacity: 1; }
+
+    .glass-card-img {
+      height: 160px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glass-card-img .aurora-mini {
+      position: absolute;
+      inset: 0;
+    }
+
+    .glass-card-body { padding: 22px; }
+
+    .glass-card-date {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .glass-card-title {
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+      line-height: 1.35;
+    }
+
+    .glass-card-excerpt {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      line-height: 1.55;
+      font-weight: 300;
+    }
+
+    .glass-tags {
+      display: flex;
+      gap: 6px;
+      margin-top: 14px;
+    }
+
+    .glass-tag {
+      font-size: 0.68rem;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: var(--bg-glass);
+      border: 1px solid var(--border-glass);
+      color: var(--text-secondary);
+    }
+
+    /* Now section */
+    .pub-now {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 40px 60px;
+      position: relative;
+      z-index: 5;
+    }
+
+    .pub-now-title {
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      font-weight: 400;
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, var(--cyan), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .pub-now-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .glass-now-block {
+      background: var(--bg-glass);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-glass);
+      border-radius: 14px;
+      padding: 20px;
+      transition: border-color 0.3s;
+    }
+
+    .glass-now-block:hover {
+      border-color: var(--border-glow);
+    }
+
+    .glass-now-block h4 {
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+
+    .glass-now-block p {
+      color: var(--text-secondary);
+      font-size: 0.82rem;
+      font-weight: 300;
+    }
+
+    /* ═══════════════════════════════════════
+       EDITOR
+    ═══════════════════════════════════════ */
+    .editor-section {
+      background: #060614;
+      position: relative;
+    }
+
+    .editor-layout {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px;
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 20px;
+      position: relative;
+      z-index: 5;
+    }
+
+    .editor-sidebar {
+      background: var(--bg-glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-glass);
+      border-radius: 16px;
+      padding: 20px;
+    }
+
+    .editor-sidebar-logo {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      font-weight: 400;
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .editor-nav-section {
+      font-size: 0.62rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin: 18px 0 8px;
+    }
+
+    .editor-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border-radius: 10px;
+      font-weight: 300;
+      transition: all 0.2s;
+      margin-bottom: 2px;
+      border: 1px solid transparent;
+    }
+
+    .editor-nav-item:hover {
+      background: var(--bg-glass);
+      color: var(--text-primary);
+    }
+
+    .editor-nav-item.active {
+      background: var(--bg-glass-strong);
+      border-color: var(--border-glow);
+      color: var(--text-primary);
+      box-shadow: 0 0 16px rgba(123,104,238,0.08);
+    }
+
+    .editor-nav-icon { width: 18px; text-align: center; }
+
+    .editor-main {
+      background: var(--bg-glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-glass);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .editor-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--border-glass);
+    }
+
+    .editor-topbar h3 {
+      font-size: 0.9rem;
+      font-weight: 300;
+      color: var(--text-secondary);
+    }
+
+    .editor-actions { display: flex; gap: 8px; }
+
+    .btn {
+      padding: 7px 18px;
+      border-radius: 12px;
+      border: 1px solid var(--border-glass);
+      background: var(--bg-glass);
+      font-size: 0.78rem;
+      cursor: pointer;
+      color: var(--text-secondary);
+      font-family: var(--sans);
+      font-weight: 300;
+      backdrop-filter: blur(10px);
+      transition: all 0.2s;
+    }
+    .btn:hover { border-color: var(--border-glow); color: var(--text-primary); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--purple), var(--pink));
+      color: #fff;
+      border-color: transparent;
+      font-weight: 400;
+    }
+    .btn-primary:hover {
+      box-shadow: 0 0 24px rgba(123,104,238,0.3);
+    }
+
+    /* Toolbar */
+    .editor-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      padding: 10px 24px;
+      border-bottom: 1px solid var(--border-glass);
+      flex-wrap: wrap;
+    }
+
+    .toolbar-btn {
+      width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      border: 1px solid transparent;
+      background: none;
+      cursor: pointer; border-radius: 8px;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      transition: all 0.2s;
+    }
+
+    .toolbar-btn:hover {
+      background: var(--bg-glass);
+      color: var(--text-secondary);
+      border-color: var(--border-glass);
+    }
+
+    .toolbar-btn.active {
+      background: var(--bg-glass-strong);
+      color: var(--purple);
+      border-color: var(--border-glow);
+    }
+
+    .toolbar-sep {
+      width: 1px; height: 18px;
+      background: var(--border-glass);
+      margin: 0 8px;
+    }
+
+    /* Writing area */
+    .editor-content {
+      padding: 36px 48px;
+      min-height: 400px;
+    }
+
+    .editor-content .title-input {
+      font-family: var(--serif);
+      font-size: 1.8rem;
+      font-weight: 400;
+      border: none; outline: none;
+      width: 100%;
+      color: var(--text-primary);
+      background: transparent;
+      margin-bottom: 24px;
+    }
+
+    .editor-content .body-text {
+      font-family: var(--sans);
+      font-size: 0.92rem;
+      line-height: 1.8;
+      color: var(--text-secondary);
+      font-weight: 300;
+    }
+
+    .editor-content .body-text p { margin-bottom: 16px; }
+
+    .editor-content .body-text .glow-word {
+      background: linear-gradient(90deg, var(--pink), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 400;
+    }
+
+    /* Meta panel */
+    .editor-meta {
+      border-top: 1px solid var(--border-glass);
+      padding: 18px 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 14px;
+    }
+
+    .meta-field label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 4px;
+      font-weight: 300;
+    }
+
+    .meta-field input, .meta-field select {
+      width: 100%;
+      padding: 7px 12px;
+      border: 1px solid var(--border-glass);
+      border-radius: 10px;
+      font-size: 0.8rem;
+      background: var(--bg-glass);
+      color: var(--text-primary);
+      backdrop-filter: blur(10px);
+      font-family: var(--sans);
+    }
+
+    .meta-field input:focus, .meta-field select:focus {
+      border-color: var(--border-glow);
+      outline: none;
+      box-shadow: 0 0 16px rgba(123,104,238,0.12);
+    }
+
+    /* ─── Design notes ─── */
+    .design-notes {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 60px 40px;
+    }
+
+    .design-notes h3 {
+      font-family: var(--serif);
+      font-size: 1.4rem;
+      font-weight: 400;
+      margin-bottom: 24px;
+      background: linear-gradient(90deg, var(--pink), var(--purple), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .notes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 18px;
+    }
+
+    .note-card {
+      padding: 20px;
+      border: 1px solid var(--border-glass);
+      border-radius: 14px;
+      background: var(--bg-glass);
+      backdrop-filter: blur(16px);
+    }
+
+    .note-card h4 {
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+      background: linear-gradient(90deg, var(--pink), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .note-card p {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+      font-weight: 300;
+    }
+
+    @media (max-width: 768px) {
+      .editor-layout { grid-template-columns: 1fr; }
+      .pub-header { flex-direction: column; gap: 16px; }
+      .pub-hero h1 { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <a href="../index.html" class="back-link">← All Proposals</a>
+
+  <!-- ═══════════ PUBLIC SITE ═══════════ -->
+  <div class="section-label">
+    <h2>AURORA GLASS — PUBLIC SITE</h2>
+    <p>Frosted glassmorphism with flowing aurora gradients</p>
+  </div>
+
+  <div class="pub aurora-bg">
+    <header class="pub-header">
+      <div class="pub-logo">Qraynix</div>
+      <nav>
+        <ul class="pub-nav">
+          <li><a href="#" class="active">Journal</a></li>
+          <li><a href="#">Timeline</a></li>
+          <li><a href="#">Now</a></li>
+          <li><a href="#">Music</a></li>
+          <li><a href="#">Habits</a></li>
+          <li><a href="#">Thoughts</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <section class="pub-hero">
+      <h1>Reflections through <span class="gradient">frozen light</span></h1>
+      <div class="tagline">A   J O U R N A L   O F   L I G H T   &   T H O U G H T</div>
+    </section>
+
+    <section class="pub-entries">
+      <div class="glass-card">
+        <div class="glass-card-img">
+          <div class="aurora-mini" style="background: linear-gradient(135deg, rgba(123,104,238,0.3), rgba(255,110,199,0.2), rgba(0,212,255,0.1));"></div>
+        </div>
+        <div class="glass-card-body">
+          <div class="glass-card-date">March 5, 2026</div>
+          <div class="glass-card-title">The architecture of light</div>
+          <div class="glass-card-excerpt">When photons bend through glass, they carry stories. Each wavelength a different memory, splitting into spectrums of understanding...</div>
+          <div class="glass-tags">
+            <span class="glass-tag">reflection</span>
+            <span class="glass-tag">light</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <div class="glass-card-img">
+          <div class="aurora-mini" style="background: linear-gradient(135deg, rgba(255,110,199,0.2), rgba(74,108,247,0.3), rgba(0,212,255,0.15));"></div>
+        </div>
+        <div class="glass-card-body">
+          <div class="glass-card-date">March 1, 2026</div>
+          <div class="glass-card-title">Mornings and the northern sky</div>
+          <div class="glass-card-excerpt">There's a moment before dawn when the sky holds its breath. The aurora fades but its memory lingers in the frost...</div>
+          <div class="glass-tags">
+            <span class="glass-tag">morning</span>
+            <span class="glass-tag">sky</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <div class="glass-card-img">
+          <div class="aurora-mini" style="background: linear-gradient(135deg, rgba(0,212,255,0.2), rgba(123,104,238,0.25), rgba(255,110,199,0.15));"></div>
+        </div>
+        <div class="glass-card-body">
+          <div class="glass-card-date">February 25, 2026</div>
+          <div class="glass-card-title">Building with transparency</div>
+          <div class="glass-card-excerpt">Code, like glass, works best when you can see through it. Clarity isn't about simplicity — it's about honest layers...</div>
+          <div class="glass-tags">
+            <span class="glass-tag">code</span>
+            <span class="glass-tag">design</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pub-now">
+      <div class="pub-now-title">What I'm doing now</div>
+      <div class="pub-now-grid">
+        <div class="glass-now-block">
+          <h4>✦ Building</h4>
+          <p>A site that feels like frosted glass — you can see through to the truth, but the edges glow with color.</p>
+        </div>
+        <div class="glass-now-block">
+          <h4>✦ Reading</h4>
+          <p>"The Order of Time" by Carlo Rovelli. Physics as poetry. Time as texture.</p>
+        </div>
+        <div class="glass-now-block">
+          <h4>✦ Listening</h4>
+          <p>Ólafur Arnalds, Nils Frahm. Piano notes that shimmer like northern lights.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ═══════════ EDITOR ═══════════ -->
+  <div class="section-label" style="background: #060614;">
+    <h2>AURORA GLASS — TEXT EDITOR</h2>
+    <p>Translucent editing environment with gradient accents</p>
+  </div>
+
+  <div class="editor-section aurora-bg">
+    <div class="editor-layout">
+      <aside class="editor-sidebar">
+        <div class="editor-sidebar-logo">Qraynix</div>
+        <div class="editor-nav-section">Main</div>
+        <div class="editor-nav-item active"><span class="editor-nav-icon">◉</span> Dashboard</div>
+        <div class="editor-nav-section">Content</div>
+        <div class="editor-nav-item"><span class="editor-nav-icon">✦</span> Entries</div>
+        <div class="editor-nav-item"><span class="editor-nav-icon">◈</span> Now</div>
+        <div class="editor-nav-item"><span class="editor-nav-icon">⟡</span> Timeline</div>
+        <div class="editor-nav-item"><span class="editor-nav-icon">♫</span> Music</div>
+        <div class="editor-nav-item"><span class="editor-nav-icon">⊹</span> Habits</div>
+        <div class="editor-nav-item"><span class="editor-nav-icon">◇</span> Thoughts</div>
+        <div class="editor-nav-section">System</div>
+        <div class="editor-nav-item"><span class="editor-nav-icon">⚙</span> Settings</div>
+        <div class="editor-nav-item"><span class="editor-nav-icon">◊</span> Analytics</div>
+      </aside>
+
+      <main class="editor-main">
+        <div class="editor-topbar">
+          <h3>New Entry</h3>
+          <div class="editor-actions">
+            <button class="btn">Save Draft</button>
+            <button class="btn btn-primary">Publish</button>
+          </div>
+        </div>
+
+        <div class="editor-toolbar">
+          <button class="toolbar-btn active" title="Bold"><b>B</b></button>
+          <button class="toolbar-btn" title="Italic"><i>I</i></button>
+          <button class="toolbar-btn" title="Underline"><u>U</u></button>
+          <div class="toolbar-sep"></div>
+          <button class="toolbar-btn" title="H1">H1</button>
+          <button class="toolbar-btn" title="H2">H2</button>
+          <button class="toolbar-btn" title="H3">H3</button>
+          <div class="toolbar-sep"></div>
+          <button class="toolbar-btn" title="List">•</button>
+          <button class="toolbar-btn" title="Ordered">1.</button>
+          <button class="toolbar-btn" title="Quote">❝</button>
+          <div class="toolbar-sep"></div>
+          <button class="toolbar-btn" title="Image">⬡</button>
+          <button class="toolbar-btn" title="Link">⟁</button>
+          <button class="toolbar-btn" title="Code">⟨⟩</button>
+        </div>
+
+        <div class="editor-content">
+          <input class="title-input" value="The architecture of light" readonly>
+          <div class="body-text">
+            <p>When <span class="glow-word">photons bend through glass</span>, they carry stories. Each wavelength a different memory, splitting into spectrums of understanding.</p>
+            <p>I've been thinking about transparency in design — not the kind that means invisible, but the kind that means <span class="glow-word">honest</span>. When you layer frosted glass over color, you get something neither fully revealed nor hidden.</p>
+            <p>That's what good writing does too. It doesn't lay everything bare. It gives you <span class="glow-word">enough light to see by</span>, and trusts you to find the rest.</p>
+          </div>
+        </div>
+
+        <div class="editor-meta">
+          <div class="meta-field">
+            <label>Status</label>
+            <select><option>Draft</option><option selected>Published</option></select>
+          </div>
+          <div class="meta-field">
+            <label>Mood</label>
+            <input type="text" value="✦ Luminous">
+          </div>
+          <div class="meta-field">
+            <label>Location</label>
+            <input type="text" value="Under the aurora">
+          </div>
+          <div class="meta-field">
+            <label>Tags</label>
+            <input type="text" value="reflection, light">
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ═══════════ DESIGN NOTES ═══════════ -->
+  <div class="design-notes">
+    <h3>Design Rationale</h3>
+    <div class="notes-grid">
+      <div class="note-card">
+        <h4>Color Philosophy</h4>
+        <p>Three-color aurora gradient: Pink (#ff6ec7) → Purple (#7b68ee) → Cyan (#00d4ff). Used sparingly on text, borders, and ambient backgrounds. Base is near-black with blue undertone.</p>
+      </div>
+      <div class="note-card">
+        <h4>Typography</h4>
+        <p><strong>Playfair Display</strong> (serif) for headings — elegant, editorial. <strong>Inter</strong> at weight 200-300 for body — ultra-light, airy. Generous letter-spacing throughout.</p>
+      </div>
+      <div class="note-card">
+        <h4>Glass Effect</h4>
+        <p>Every card and panel uses background blur (backdrop-filter: blur 16-24px) with rgba white borders. Creates depth without solid surfaces. Hover reveals gradient top-border.</p>
+      </div>
+      <div class="note-card">
+        <h4>Editor Changes</h4>
+        <p>Same glassmorphism in the editor. Rounded pill-shaped inputs and nav items. Gradient publish button. Highlighted words use gradient text effect instead of bold/color.</p>
+      </div>
+      <div class="note-card">
+        <h4>Key Departure</h4>
+        <p>Replaces solid dark surfaces with translucent glass. Runes replaced with flowing aurora gradients. Overall feel shifts from "ancient stone" to "frozen light." More modern, less mystical.</p>
+      </div>
+      <div class="note-card">
+        <h4>Animation</h4>
+        <p>Slow-drifting aurora blobs (12-15s loops) behind content. Card hover lifts + border glow. No flickering — everything is smooth and breathing. Transitions at 0.25-0.35s.</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

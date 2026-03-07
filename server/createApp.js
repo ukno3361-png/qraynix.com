@@ -26,6 +26,7 @@ const { createMusicService } = require('./services/musicService');
 const { createHabitService } = require('./services/habitService');
 const { createThoughtFlashService } = require('./services/thoughtFlashService');
 const { createAssistantService } = require('./services/assistantService');
+const { createEntertainmentService } = require('./services/entertainmentService');
 
 /**
  * createApp — builds and configures the Express application.
@@ -43,8 +44,8 @@ const createApp = (config) => {
                 scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
                 styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
                 fontSrc: ["'self'", 'https://fonts.gstatic.com'],
-                imgSrc: ["'self'", 'data:', 'blob:', 'https://i.scdn.co'],
-                mediaSrc: ["'self'", 'data:', 'blob:'],
+                imgSrc: ["'self'", 'data:', 'blob:', 'https://i.scdn.co', 'https://*.mzstatic.com'],
+                mediaSrc: ["'self'", 'data:', 'blob:', 'https://*.mzstatic.com', 'https://audio-ssl.itunes.apple.com'],
                 connectSrc: ["'self'", config.isDev ? 'ws://localhost:*' : ''],
                 frameSrc: ["'self'", 'https://open.spotify.com'],
             },
@@ -119,6 +120,7 @@ const createApp = (config) => {
         habits: createHabitService(),
         thoughtFlash: createThoughtFlashService(),
         assistant: createAssistantService(settingsService),
+        entertainment: createEntertainmentService(),
     };
 
     // ── File Upload ──

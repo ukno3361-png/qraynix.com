@@ -95,6 +95,49 @@
         applyModalSizing();
     };
 
+    const GAP = 10;
+    const getColCount = () => {
+        const w = window.innerWidth;
+        if (w <= 560) return 1;
+        if (w <= 900) return 2;
+        if (w <= 1200) return 3;
+        return 4;
+    };
+
+    const layoutMasonry = () => {
+        const cards = Array.from(grid.querySelectorAll('.thought-card'));
+        if (!cards.length) return;
+        const cols = getColCount();
+        const gridW = grid.clientWidth;
+        const colW = (gridW - GAP * (cols - 1)) / cols;
+        const colHeights = new Array(cols).fill(0);
+
+        cards.forEach(card => {
+            card.style.width = colW + 'px';
+            card.style.visibility = 'hidden';
+            card.style.position = 'absolute';
+        });
+
+        // Let browser calculate heights
+        requestAnimationFrame(() => {
+            cards.forEach(card => {
+                const shortest = colHeights.indexOf(Math.min(...colHeights));
+                const x = shortest * (colW + GAP);
+                const y = colHeights[shortest];
+                card.style.transform = `translate(${x}px, ${y}px)`;
+                card.style.visibility = '';
+                colHeights[shortest] = y + card.offsetHeight + GAP;
+            });
+            grid.style.height = Math.max(...colHeights) + 'px';
+        });
+    };
+
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(layoutMasonry, 100);
+    });
+
     const renderItems = (newItems) => {
         const html = newItems.map((item) => `
             <article class="thought-card" data-id="${item.id}" tabindex="0" role="button" aria-label="Open thought item">
@@ -104,6 +147,16 @@
         `).join('');
 
         grid.insertAdjacentHTML('beforeend', html);
+
+        // Re-layout after images load
+        grid.querySelectorAll('.thought-card').forEach((card) => {
+            const media = card.querySelector('.thought-media');
+            if (media && media.tagName === 'IMG' && !media.complete) {
+                media.addEventListener('load', layoutMasonry, { once: true });
+            }
+        });
+
+        layoutMasonry();
 
         grid.querySelectorAll('.thought-card').forEach((card) => {
             if (card.dataset.bound === '1') return;

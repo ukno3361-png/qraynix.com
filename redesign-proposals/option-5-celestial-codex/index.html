@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Option 5 — Celestial Codex</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-primary: #08080e;
+      --bg-secondary: #0c0c14;
+      --bg-card: #0f0f1a;
+      --bg-surface: #12121e;
+      --text-primary: #e8e4f0;
+      --text-secondary: #a8a0b8;
+      --text-muted: #5a5470;
+      --gold: #d4a843;
+      --gold-dim: #9a7a30;
+      --gold-bright: #f0c850;
+      --lavender: #b19bcf;
+      --lavender-dim: #6f5a8e;
+      --constellation: rgba(212,168,67,0.15);
+      --star: #fff;
+      --border: #1a1a2e;
+      --border-glow: rgba(212,168,67,0.2);
+      --serif-display: 'Cinzel', serif;
+      --serif-body: 'EB Garamond', serif;
+      --sans: 'Inter', system-ui, sans-serif;
+    }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .back-link {
+      position: fixed; top: 16px; left: 16px; z-index: 100;
+      color: var(--gold); text-decoration: none; font-size: 0.82rem;
+      background: var(--bg-card); padding: 6px 14px; border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+    .back-link:hover { background: var(--gold); color: var(--bg-primary); }
+
+    .section-label {
+      text-align: center; padding: 48px 20px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-label h2 {
+      font-family: var(--serif-display);
+      font-size: 1.1rem;
+      color: var(--gold);
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+    .section-label p {
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      margin-top: 6px;
+    }
+
+    /* ═══════════════════════════════════════
+       STARFIELD
+    ═══════════════════════════════════════ */
+    .starfield {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .starfield::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.6), transparent),
+        radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.4), transparent),
+        radial-gradient(1.5px 1.5px at 50% 15%, rgba(212,168,67,0.8), transparent),
+        radial-gradient(1px 1px at 70% 45%, rgba(255,255,255,0.5), transparent),
+        radial-gradient(1px 1px at 85% 80%, rgba(255,255,255,0.3), transparent),
+        radial-gradient(1.5px 1.5px at 20% 85%, rgba(177,155,207,0.6), transparent),
+        radial-gradient(1px 1px at 60% 90%, rgba(255,255,255,0.4), transparent),
+        radial-gradient(1px 1px at 90% 10%, rgba(255,255,255,0.5), transparent),
+        radial-gradient(1px 1px at 45% 50%, rgba(212,168,67,0.5), transparent),
+        radial-gradient(1px 1px at 15% 45%, rgba(255,255,255,0.3), transparent);
+      pointer-events: none;
+      animation: twinkle 8s ease-in-out infinite alternate;
+    }
+
+    @keyframes twinkle {
+      0% { opacity: 0.7; }
+      100% { opacity: 1; }
+    }
+
+    /* Constellation lines */
+    .constellation-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      opacity: 0.12;
+    }
+
+    /* ═══════════════════════════════════════
+       PUBLIC SITE
+    ═══════════════════════════════════════ */
+    .pub { position: relative; }
+
+    .pub-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 40px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(8,8,14,0.85);
+      backdrop-filter: blur(12px);
+      position: relative;
+      z-index: 10;
+    }
+
+    .pub-logo {
+      font-family: var(--serif-display);
+      font-size: 1.2rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--gold);
+    }
+
+    .pub-logo .rune {
+      font-size: 0.9rem;
+      margin-right: 6px;
+      opacity: 0.7;
+    }
+
+    .pub-nav { display: flex; gap: 8px; list-style: none; }
+
+    .pub-nav a {
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      padding: 6px 14px;
+      font-family: var(--sans);
+      font-weight: 300;
+      letter-spacing: 0.04em;
+      transition: all 0.25s;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      position: relative;
+    }
+
+    .pub-nav a .nav-rune {
+      font-size: 0.65rem;
+      margin-right: 4px;
+      opacity: 0.5;
+    }
+
+    .pub-nav a:hover {
+      color: var(--text-primary);
+      border-color: var(--border);
+    }
+
+    .pub-nav a.active {
+      color: var(--gold);
+      border-color: var(--border-glow);
+      background: rgba(212,168,67,0.05);
+    }
+
+    /* Hero */
+    .pub-hero {
+      text-align: center;
+      padding: 100px 40px 80px;
+      position: relative;
+      z-index: 5;
+    }
+
+    .pub-hero .rune-circle {
+      width: 80px; height: 80px;
+      margin: 0 auto 24px;
+      border: 1px solid var(--border-glow);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      color: var(--gold);
+      opacity: 0.6;
+      animation: slowRotate 60s linear infinite;
+    }
+
+    @keyframes slowRotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .pub-hero h1 {
+      font-family: var(--serif-display);
+      font-size: 2.6rem;
+      font-weight: 400;
+      line-height: 1.3;
+      max-width: 700px;
+      margin: 0 auto 16px;
+      letter-spacing: 0.06em;
+    }
+
+    .pub-hero h1 .gold { color: var(--gold); }
+
+    .pub-hero .tagline {
+      font-family: var(--serif-body);
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    /* Entry cards */
+    .pub-entries {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+      gap: 24px;
+      position: relative;
+      z-index: 5;
+    }
+
+    .celestial-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: all 0.3s;
+      position: relative;
+    }
+
+    .celestial-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .celestial-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--border-glow);
+      box-shadow: 0 8px 32px rgba(212,168,67,0.08);
+    }
+
+    .celestial-card:hover::after { opacity: 1; }
+
+    .celestial-card-img {
+      height: 160px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .celestial-card-img .stars {
+      position: absolute;
+      inset: 0;
+    }
+
+    .celestial-card-rune {
+      position: absolute;
+      top: 12px; right: 14px;
+      font-size: 0.9rem;
+      color: var(--gold);
+      opacity: 0.5;
+      width: 28px; height: 28px;
+      display: flex; align-items: center; justify-content: center;
+      border: 1px solid rgba(212,168,67,0.2);
+      border-radius: 50%;
+    }
+
+    .celestial-card-body { padding: 22px; }
+
+    .celestial-card-date {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+      font-family: var(--sans);
+    }
+
+    .celestial-card-title {
+      font-family: var(--serif-display);
+      font-size: 1.05rem;
+      font-weight: 400;
+      margin-bottom: 8px;
+      line-height: 1.4;
+      letter-spacing: 0.03em;
+    }
+
+    .celestial-card-excerpt {
+      font-family: var(--serif-body);
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .celestial-tags {
+      display: flex;
+      gap: 6px;
+      margin-top: 14px;
+    }
+
+    .celestial-tag {
+      font-size: 0.68rem;
+      padding: 3px 10px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      color: var(--lavender);
+      font-family: var(--sans);
+    }
+
+    /* Now section */
+    .pub-now {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 40px 60px;
+      position: relative;
+      z-index: 5;
+    }
+
+    .pub-now-title {
+      font-family: var(--serif-display);
+      font-size: 1.2rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      margin-bottom: 20px;
+      color: var(--gold);
+    }
+    .pub-now-title .rune { opacity: 0.5; margin-right: 8px; }
+
+    .pub-now-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .celestial-now-block {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      transition: border-color 0.3s;
+    }
+
+    .celestial-now-block:hover {
+      border-color: var(--border-glow);
+    }
+
+    .celestial-now-block h4 {
+      font-family: var(--serif-display);
+      font-size: 0.8rem;
+      font-weight: 400;
+      margin-bottom: 8px;
+      color: var(--gold);
+      letter-spacing: 0.08em;
+    }
+
+    .celestial-now-block p {
+      font-family: var(--serif-body);
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+    }
+
+    /* ═══════════════════════════════════════
+       EDITOR
+    ═══════════════════════════════════════ */
+    .editor-section { background: var(--bg-secondary); }
+
+    .editor-layout {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px;
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      gap: 20px;
+    }
+
+    .editor-sidebar {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+    }
+
+    .editor-sidebar-logo {
+      font-family: var(--serif-display);
+      font-size: 1rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .editor-sidebar-logo .rune { margin-right: 6px; opacity: 0.5; }
+
+    .editor-nav-section {
+      font-size: 0.62rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin: 18px 0 8px;
+      font-family: var(--serif-display);
+    }
+
+    .editor-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border-radius: 6px;
+      font-weight: 300;
+      transition: all 0.2s;
+      margin-bottom: 2px;
+    }
+
+    .editor-nav-item:hover {
+      background: rgba(212,168,67,0.04);
+      color: var(--text-primary);
+    }
+
+    .editor-nav-item.active {
+      background: rgba(212,168,67,0.08);
+      color: var(--gold);
+      border: 1px solid var(--border-glow);
+    }
+
+    .editor-nav-icon {
+      width: 18px;
+      text-align: center;
+      color: var(--gold-dim);
+      font-size: 0.85rem;
+    }
+
+    .editor-main {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .editor-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .editor-topbar h3 {
+      font-family: var(--serif-display);
+      font-size: 0.85rem;
+      font-weight: 400;
+      color: var(--text-secondary);
+      letter-spacing: 0.06em;
+    }
+
+    .editor-actions { display: flex; gap: 8px; }
+
+    .btn {
+      padding: 7px 18px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: transparent;
+      font-size: 0.78rem;
+      cursor: pointer;
+      color: var(--text-secondary);
+      font-family: var(--sans);
+      transition: all 0.2s;
+    }
+    .btn:hover { border-color: var(--gold-dim); color: var(--text-primary); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold-dim), var(--gold));
+      color: var(--bg-primary);
+      border-color: var(--gold);
+      font-weight: 500;
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, var(--gold), var(--gold-bright));
+      box-shadow: 0 0 20px rgba(212,168,67,0.2);
+    }
+
+    /* Toolbar */
+    .editor-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      padding: 10px 24px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .toolbar-btn {
+      width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      border: 1px solid transparent;
+      background: none;
+      cursor: pointer; border-radius: 5px;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      transition: all 0.2s;
+    }
+
+    .toolbar-btn:hover {
+      background: rgba(212,168,67,0.06);
+      color: var(--text-secondary);
+      border-color: var(--border);
+    }
+
+    .toolbar-btn.active {
+      background: rgba(212,168,67,0.1);
+      color: var(--gold);
+      border-color: var(--border-glow);
+    }
+
+    .toolbar-sep {
+      width: 1px; height: 18px;
+      background: var(--border);
+      margin: 0 8px;
+    }
+
+    /* Writing area */
+    .editor-content {
+      padding: 36px 52px;
+      min-height: 420px;
+    }
+
+    .editor-content .title-input {
+      font-family: var(--serif-display);
+      font-size: 1.6rem;
+      font-weight: 400;
+      border: none; outline: none;
+      width: 100%;
+      color: var(--text-primary);
+      background: transparent;
+      margin-bottom: 8px;
+      letter-spacing: 0.04em;
+    }
+
+    .editor-content .meta-line {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+      font-family: var(--sans);
+      font-weight: 300;
+    }
+
+    .editor-content .meta-line .gold-accent { color: var(--gold-dim); }
+
+    .editor-content .body-text {
+      font-family: var(--serif-body);
+      font-size: 1rem;
+      line-height: 1.8;
+      color: var(--text-secondary);
+    }
+
+    .editor-content .body-text p { margin-bottom: 18px; }
+
+    .editor-content .body-text .rune-emphasis {
+      color: var(--gold);
+      font-style: italic;
+    }
+
+    .editor-content .body-text .glow-text {
+      text-shadow: 0 0 12px rgba(177,155,207,0.3);
+      color: var(--lavender);
+    }
+
+    .editor-content .body-text blockquote {
+      border-left: 2px solid var(--gold-dim);
+      padding-left: 20px;
+      margin: 20px 0;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* Meta panel */
+    .editor-meta {
+      border-top: 1px solid var(--border);
+      padding: 18px 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 14px;
+    }
+
+    .meta-field label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 4px;
+      font-family: var(--serif-display);
+    }
+
+    .meta-field input, .meta-field select {
+      width: 100%;
+      padding: 7px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.8rem;
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      font-family: var(--sans);
+    }
+
+    .meta-field input:focus, .meta-field select:focus {
+      border-color: var(--border-glow);
+      outline: none;
+      box-shadow: 0 0 12px rgba(212,168,67,0.08);
+    }
+
+    /* ─── Design notes ─── */
+    .design-notes {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 60px 40px;
+    }
+
+    .design-notes h3 {
+      font-family: var(--serif-display);
+      font-size: 1.2rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      margin-bottom: 24px;
+      color: var(--gold);
+    }
+
+    .notes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 18px;
+    }
+
+    .note-card {
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg-card);
+    }
+
+    .note-card h4 {
+      font-family: var(--serif-display);
+      font-size: 0.82rem;
+      font-weight: 400;
+      color: var(--gold);
+      margin-bottom: 8px;
+      letter-spacing: 0.06em;
+    }
+
+    .note-card p {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+
+    @media (max-width: 768px) {
+      .editor-layout { grid-template-columns: 1fr; }
+      .pub-header { flex-direction: column; gap: 16px; }
+      .pub-hero h1 { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+  <a href="../index.html" class="back-link">← All Proposals</a>
+
+  <!-- ═══════════ PUBLIC SITE ═══════════ -->
+  <div class="section-label">
+    <h2>Celestial Codex — Public Site</h2>
+    <p>Evolved Norse mysticism · constellation mapping · gilded accents</p>
+  </div>
+
+  <div class="pub starfield">
+    <svg class="constellation-svg" viewBox="0 0 1200 600" preserveAspectRatio="none">
+      <line x1="120" y1="80" x2="340" y2="160" stroke="#d4a843" stroke-width="0.5" opacity="0.2"/>
+      <line x1="340" y1="160" x2="500" y2="100" stroke="#d4a843" stroke-width="0.5" opacity="0.2"/>
+      <line x1="500" y1="100" x2="680" y2="200" stroke="#d4a843" stroke-width="0.5" opacity="0.15"/>
+      <line x1="680" y1="200" x2="900" y2="140" stroke="#d4a843" stroke-width="0.5" opacity="0.15"/>
+      <line x1="200" y1="400" x2="450" y2="350" stroke="#b19bcf" stroke-width="0.5" opacity="0.12"/>
+      <line x1="450" y1="350" x2="700" y2="420" stroke="#b19bcf" stroke-width="0.5" opacity="0.12"/>
+      <circle cx="120" cy="80" r="2" fill="#d4a843" opacity="0.4"/>
+      <circle cx="340" cy="160" r="2.5" fill="#d4a843" opacity="0.5"/>
+      <circle cx="500" cy="100" r="2" fill="#d4a843" opacity="0.3"/>
+      <circle cx="680" cy="200" r="3" fill="#d4a843" opacity="0.4"/>
+      <circle cx="900" cy="140" r="2" fill="#d4a843" opacity="0.3"/>
+      <circle cx="200" cy="400" r="2" fill="#b19bcf" opacity="0.3"/>
+      <circle cx="450" cy="350" r="2.5" fill="#b19bcf" opacity="0.3"/>
+      <circle cx="700" cy="420" r="2" fill="#b19bcf" opacity="0.25"/>
+    </svg>
+
+    <header class="pub-header">
+      <div class="pub-logo"><span class="rune">ᛟ</span> QRAYNIX</div>
+      <nav>
+        <ul class="pub-nav">
+          <li><a href="#" class="active"><span class="nav-rune">◇</span>Journal</a></li>
+          <li><a href="#"><span class="nav-rune">⟡</span>Timeline</a></li>
+          <li><a href="#"><span class="nav-rune">◈</span>Now</a></li>
+          <li><a href="#"><span class="nav-rune">♫</span>Music</a></li>
+          <li><a href="#"><span class="nav-rune">⊹</span>Habits</a></li>
+          <li><a href="#"><span class="nav-rune">ᛃ</span>Thoughts</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <section class="pub-hero">
+      <div class="rune-circle">ᛟ</div>
+      <h1>Written in <span class="gold">starlight</span>, bound in code</h1>
+      <div class="tagline">A codex of constellations, each entry a new star in the mapping</div>
+    </section>
+
+    <section class="pub-entries">
+      <div class="celestial-card">
+        <div class="celestial-card-img">
+          <div class="stars" style="background: linear-gradient(135deg, #0a0a1a, #14142a, #0e0e20);"></div>
+          <div class="celestial-card-rune">ᚱ</div>
+        </div>
+        <div class="celestial-card-body">
+          <div class="celestial-card-date">March 5, 2026</div>
+          <div class="celestial-card-title">Mapping the Distance Between Stars</div>
+          <div class="celestial-card-excerpt">The constellations we draw aren't real — they're stories we project onto the sky. But the stories become real when enough people look up and see the same shapes...</div>
+          <div class="celestial-tags">
+            <span class="celestial-tag">reflection</span>
+            <span class="celestial-tag">cosmos</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="celestial-card">
+        <div class="celestial-card-img">
+          <div class="stars" style="background: linear-gradient(135deg, #0e0816, #18102a, #0c0a1e);"></div>
+          <div class="celestial-card-rune">ᚹ</div>
+        </div>
+        <div class="celestial-card-body">
+          <div class="celestial-card-date">March 1, 2026</div>
+          <div class="celestial-card-title">The Weight of Light Years</div>
+          <div class="celestial-card-excerpt">When we measure distance in light years, we're really measuring time. Every star you see is a message from the past, arriving exactly when you need it...</div>
+          <div class="celestial-tags">
+            <span class="celestial-tag">time</span>
+            <span class="celestial-tag">perspective</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="celestial-card">
+        <div class="celestial-card-img">
+          <div class="stars" style="background: linear-gradient(135deg, #0a0c1a, #121628, #0a0e1c);"></div>
+          <div class="celestial-card-rune">ᚠ</div>
+        </div>
+        <div class="celestial-card-body">
+          <div class="celestial-card-date">February 25, 2026</div>
+          <div class="celestial-card-title">Building Observatories</div>
+          <div class="celestial-card-excerpt">The best code, like the best telescope, isn't about magnification — it's about the clarity of the lens. You strip away distortion until truth comes through...</div>
+          <div class="celestial-tags">
+            <span class="celestial-tag">code</span>
+            <span class="celestial-tag">craft</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pub-now">
+      <div class="pub-now-title"><span class="rune">◈</span> What I'm Charting Now</div>
+      <div class="pub-now-grid">
+        <div class="celestial-now-block">
+          <h4>ᚱ Building</h4>
+          <p>A personal codex — each page a star, each link a constellation line. The site maps a life in progress.</p>
+        </div>
+        <div class="celestial-now-block">
+          <h4>ᚹ Reading</h4>
+          <p>"Cosmos" by Carl Sagan. The poetry of science. A reminder that we're all made of star-stuff.</p>
+        </div>
+        <div class="celestial-now-block">
+          <h4>ᚠ Listening</h4>
+          <p>Wardruna, Heilung, and ambient space drones. Sound that feels ancient and infinite simultaneously.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ═══════════ EDITOR ═══════════ -->
+  <div class="section-label" style="background: var(--bg-secondary);">
+    <h2>Celestial Codex — Text Editor</h2>
+    <p>Refined dark editor with gold accents and constellation-inspired hierarchy</p>
+  </div>
+
+  <div class="editor-section">
+    <div class="editor-layout">
+      <aside class="editor-sidebar">
+        <div class="editor-sidebar-logo"><span class="rune">ᛟ</span> QRAYNIX</div>
+        <div class="editor-nav-section">Main</div>
+        <div class="editor-nav-item active"><span class="editor-nav-icon">⬡</span> Dashboard</div>
+        <div class="editor-nav-section">Content</div>
+        <div class="editor-nav-item"><span class="editor-nav-icon">✦</span> Entries</div>
+        <div class="editor-nav-item"><span class="editor-nav-icon">◈</span> Now</div>
+        <div class="editor-nav-item"><span class="editor-nav-icon">⟡</span> Timeline</div>
+        <div class="editor-nav-item"><span class="editor-nav-icon">♫</span> Music</div>
+        <div class="editor-nav-item"><span class="editor-nav-icon">⊹</span> Habits</div>
+        <div class="editor-nav-item"><span class="editor-nav-icon">◇</span> Thoughts</div>
+        <div class="editor-nav-item"><span class="editor-nav-icon">♡</span> Health</div>
+        <div class="editor-nav-item"><span class="editor-nav-icon">⟐</span> Future</div>
+        <div class="editor-nav-section">System</div>
+        <div class="editor-nav-item"><span class="editor-nav-icon">⚙</span> Settings</div>
+        <div class="editor-nav-item"><span class="editor-nav-icon">◊</span> Analytics</div>
+        <div class="editor-nav-item"><span class="editor-nav-icon">🤖</span> AI Bot</div>
+      </aside>
+
+      <main class="editor-main">
+        <div class="editor-topbar">
+          <h3>New Entry</h3>
+          <div class="editor-actions">
+            <button class="btn">Save Draft</button>
+            <button class="btn btn-primary">✦ Publish</button>
+          </div>
+        </div>
+
+        <div class="editor-toolbar">
+          <button class="toolbar-btn active" title="Bold"><b>B</b></button>
+          <button class="toolbar-btn" title="Italic"><i>I</i></button>
+          <button class="toolbar-btn" title="Underline"><u>U</u></button>
+          <button class="toolbar-btn" title="Strike"><s>S</s></button>
+          <div class="toolbar-sep"></div>
+          <button class="toolbar-btn" title="H1">H1</button>
+          <button class="toolbar-btn" title="H2">H2</button>
+          <button class="toolbar-btn" title="H3">H3</button>
+          <div class="toolbar-sep"></div>
+          <button class="toolbar-btn" title="Bullet">•</button>
+          <button class="toolbar-btn" title="Ordered">1.</button>
+          <button class="toolbar-btn" title="Todo">☐</button>
+          <button class="toolbar-btn" title="Quote">❝</button>
+          <div class="toolbar-sep"></div>
+          <button class="toolbar-btn" title="Image">⬡</button>
+          <button class="toolbar-btn" title="Link">⟁</button>
+          <button class="toolbar-btn" title="Code">&lt;/&gt;</button>
+          <button class="toolbar-btn" title="Table">⊞</button>
+          <div class="toolbar-sep"></div>
+          <button class="toolbar-btn" title="Color">◉</button>
+          <button class="toolbar-btn" title="Font">Aa</button>
+        </div>
+
+        <div class="editor-content">
+          <input class="title-input" value="Mapping the Distance Between Stars" readonly>
+          <div class="meta-line"><span class="gold-accent">ᚱ</span> March 5, 2026 · Draft · 612 words · 3 min read</div>
+
+          <div class="body-text">
+            <p>The <span class="rune-emphasis">constellations</span> we draw aren't real — they're stories we project onto the sky. But the stories become real when enough people look up and see the same shapes.</p>
+
+            <blockquote>We are all in the gutter, but some of us are looking at the stars. — Oscar Wilde</blockquote>
+
+            <p>I've been thinking about how <span class="glow-text">personal journals are like star maps</span>. Each entry is a point of light, and over time, you start to see the lines between them — patterns you didn't plan, constellations of thought that only emerge when you look back from a distance.</p>
+
+            <p>The <span class="rune-emphasis">distance</span> matters. Too close and you see only the individual word. Too far and the meaning dissolves. But from the right vantage — maybe years later, reading old entries — the shape of your thinking becomes visible, like Orion emerging from the winter sky.</p>
+          </div>
+        </div>
+
+        <div class="editor-meta">
+          <div class="meta-field">
+            <label>Status</label>
+            <select><option selected>Draft</option><option>Published</option></select>
+          </div>
+          <div class="meta-field">
+            <label>Mood</label>
+            <input type="text" value="✦ Expansive">
+          </div>
+          <div class="meta-field">
+            <label>Location</label>
+            <input type="text" value="Under the stars">
+          </div>
+          <div class="meta-field">
+            <label>Tags</label>
+            <input type="text" value="reflection, cosmos">
+          </div>
+          <div class="meta-field">
+            <label>Cover</label>
+            <input type="text" value="starfield-march.jpg">
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ═══════════ DESIGN NOTES ═══════════ -->
+  <div class="design-notes">
+    <h3>DESIGN RATIONALE</h3>
+    <div class="notes-grid">
+      <div class="note-card">
+        <h4>Color Evolution</h4>
+        <p>Keeps the dark base but shifts primary accent from purple/lavender to <strong>gold (#d4a843)</strong>. Lavender becomes secondary. Creates a "gilded manuscript" feel — more regal, less mystical.</p>
+      </div>
+      <div class="note-card">
+        <h4>Typography</h4>
+        <p>Same font families as current (Cinzel, EB Garamond, Inter) but with <strong>refined hierarchy</strong>. Cinzel used more sparingly and at lighter weights. Garamond given more prominence in body text.</p>
+      </div>
+      <div class="note-card">
+        <h4>Rune Evolution</h4>
+        <p>Runes <strong>stay but evolve</strong>. No longer background decoration — they become <strong>functional icons</strong> in cards (per-entry rune) and navigation. Each entry earns a unique rune glyph. Constellation lines replace random background runes.</p>
+      </div>
+      <div class="note-card">
+        <h4>Constellation Mapping</h4>
+        <p>SVG constellation lines connect star-dots in the background. Creates a sense of connections between ideas. The site becomes a "star map of thought." Parallax effect on scroll (in implementation).</p>
+      </div>
+      <div class="note-card">
+        <h4>Editor Changes</h4>
+        <p>Gold gradient publish button. Rune glyph in meta line. Glow text effect for emphasis. Blockquote with gold left border. More toolbar options visible. All nav items include Health, Future, AI Bot sections.</p>
+      </div>
+      <div class="note-card">
+        <h4>Key Departure</h4>
+        <p>Least disruptive option — <strong>preserves existing DNA</strong> while elevating it. Swaps randomized flickering runes for intentional constellation patterns. Adds gold as primary over purple. Feels like the current site's "2.0" — not a replacement, but a refinement.</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

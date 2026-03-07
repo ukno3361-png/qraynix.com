@@ -84,8 +84,8 @@ export default function EntriesList() {
                 <div className="page-loader"><div className="spinner spinner-lg"></div></div>
             ) : data.entries.length > 0 ? (
                 <>
-                    <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-                        <table className="data-table">
+                    <div className="table-scroll">
+                        <table className="data-table entries-table">
                             <thead>
                                 <tr>
                                     <th>Title</th>
@@ -99,8 +99,8 @@ export default function EntriesList() {
                             <tbody>
                                 {data.entries.map((entry) => (
                                     <tr key={entry.id}>
-                                        <td><Link to={`/admin/entries/${entry.id}/edit`} style={{ fontWeight: 600 }}>{entry.title}</Link></td>
-                                        <td><span className={`status-badge status-${entry.status}`}>{entry.status}</span></td>
+                                        <td><Link to={`/admin/entries/${entry.id}/edit`} className="entry-title-cell">{entry.title}</Link></td>
+                                        <td><span className={`status-badge status-${entry.status}`}><span className="status-dot" />{entry.status}</span></td>
                                         <td>
                                             <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap' }}>
                                                 {(entry.tags || []).map((t) => <span key={t.id} className="tag-chip">{t.name}</span>)}

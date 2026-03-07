@@ -17,6 +17,8 @@ const { createMusicRouter } = require('./music');
 const { createHabitsRouter } = require('./habits');
 const { createThoughtFlashRouter } = require('./thoughtFlash');
 const { createAssistantRouter } = require('./assistant');
+const { createEntertainmentRouter } = require('./entertainment');
+const { createDbToolsRouter } = require('./dbTools');
 
 /**
  * createApiRouter — mounts all API routes.
@@ -41,6 +43,8 @@ const createApiRouter = (services, uploadMiddleware, config) => {
     router.use('/habits', createHabitsRouter(services.habits));
     router.use('/thought-flash', createThoughtFlashRouter(services.thoughtFlash));
     router.use('/assistant', createAssistantRouter(services.assistant));
+    router.use('/entertainment', createEntertainmentRouter(services.entertainment));
+    router.use('/db-tools', createDbToolsRouter(config));
 
     return router;
 };

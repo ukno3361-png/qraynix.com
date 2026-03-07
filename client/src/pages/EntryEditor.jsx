@@ -231,6 +231,12 @@ export default function EntryEditor() {
     const [slashIndex, setSlashIndex] = useState(0);
 
     const autosaveRef = useRef(null);
+    const createdEntryIdRef = useRef(id ? Number(id) : null);
+    const saveInFlightRef = useRef(false);
+
+    useEffect(() => {
+        createdEntryIdRef.current = id ? Number(id) : null;
+    }, [id]);
 
     const editor = useEditor({
         extensions: [
@@ -615,16 +621,21 @@ export default function EntryEditor() {
         return () => editor.view.dom.removeEventListener('keydown', onKeyDown);
     }, [closeSlashMenu, editor, filteredSlashItems, runSlashCommand, slashIndex, slashMenu.open]);
 
-    const handleSave = useCallback(async (silent = false) => {
-        if (!editor) return;
+    const handleSave = useCallback(async (silent = false, statusOverride) => {
+        if (!editor || saveInFlightRef.current) return;
 
+        saveInFlightRef.current = true;
         setSaving(true);
         try {
+            const resolvedStatus = statusOverride || entry.status;
+            const resolvedPublishedAt = resolvedStatus === 'published' ? localDateTimeToIso(entryDate) : null;
+
             const payload = {
                 ...entry,
+                status: resolvedStatus,
                 content: editor.getText(),
                 content_html: editor.getHTML(),
-                published_at: localDateTimeToIso(entryDate),
+                published_at: resolvedPublishedAt,
             };
 
             delete payload.id;
@@ -632,15 +643,18 @@ export default function EntryEditor() {
             delete payload.created_at;
             delete payload.updated_at;
 
+            const entryId = id ? Number(id) : (createdEntryIdRef.current || entry.id || null);
+
             let saved;
-            if (isNew) {
+            if (!entryId) {
                 saved = await entriesApi.create(payload);
+                createdEntryIdRef.current = saved.id;
                 await entriesApi.updateTags(saved.id, selectedTags);
                 toast.success('Entry created');
                 navigate(`/admin/entries/${saved.id}/edit`, { replace: true });
             } else {
-                saved = await entriesApi.update(id, payload);
-                await entriesApi.updateTags(id, selectedTags);
+                saved = await entriesApi.update(entryId, payload);
+                await entriesApi.updateTags(entryId, selectedTags);
                 if (!silent) toast.success('Saved');
             }
 
@@ -648,9 +662,10 @@ export default function EntryEditor() {
         } catch (error) {
             toast.error(error.message || 'Could not save entry');
         } finally {
+            saveInFlightRef.current = false;
             setSaving(false);
         }
-    }, [editor, entry, entryDate, id, isNew, navigate, selectedTags, toast]);
+    }, [editor, entry, entryDate, id, navigate, selectedTags, toast]);
 
     useEffect(() => {
         if (isNew || !editor) return undefined;
@@ -674,8 +689,7 @@ export default function EntryEditor() {
         if (!entryDate) {
             setEntryDate(isoToLocalDateTime(new Date().toISOString()));
         }
-        setEntry((prev) => ({ ...prev, status: 'published' }));
-        setTimeout(() => handleSave(), 100);
+        handleSave(false, 'published');
     };
 
     const toggleTag = (tagId) => {
@@ -694,42 +708,99 @@ export default function EntryEditor() {
     const charCount = editor?.storage.characterCount.characters() || 0;
 
     return (
-        <div>
-            <div className="page-header">
-                <h1 className="page-title">{isNew ? 'New Entry' : 'Edit Entry'}</h1>
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                    <button className="btn btn-secondary" onClick={() => handleSave()} disabled={saving}>
-                        {saving ? 'Saving...' : 'Save Draft'}
-                    </button>
-                    <button className="btn btn-primary" onClick={handlePublish} disabled={saving}>Publish</button>
+        <div className="editor-body">
+            {/* Editor action bar */}
+            <div className="editor-action-bar">
+                <div className="editor-action-left">
+                    <span className="editor-action-title">{entry.title || 'Untitled'}</span>
+                </div>
+                <div className="editor-action-right">
+                    <span className="editor-word-count">{wordCount} words</span>
+                    <button type="button" className="btn" onClick={() => handleSave(false, 'draft')} disabled={saving}>{saving ? 'Saving…' : 'Save Draft'}</button>
+                    <button type="button" className="btn btn-primary" onClick={handlePublish} disabled={saving}>Publish</button>
                 </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: '1.5rem', alignItems: 'start' }}>
-                <div>
+            {/* Left: Writing canvas */}
+            <div className="editor-canvas">
+                {/* Cover image area */}
+                <div
+                    className={`editor-cover${entry.cover_image ? ' has-image' : ''}`}
+                    style={entry.cover_image ? { backgroundImage: `url(${entry.cover_image})` } : undefined}
+                >
+                    <div className="editor-cover-actions">
+                        <button type="button" className="editor-cover-btn" onClick={() => openPanel('media', { toggle: true })}>Change cover</button>
+                        <button type="button" className="editor-cover-btn" onClick={clearCoverImage}>Remove</button>
+                    </div>
+                </div>
+
+                {/* Page icon */}
+                <div className="editor-page-icon">✦</div>
+
+                {/* Title + subtitle */}
+                <div className="editor-title-area">
                     <input
-                        className="form-input"
+                        className="editor-title-input"
                         type="text"
-                        placeholder="Entry title..."
+                        placeholder="Untitled"
                         value={entry.title}
                         onChange={(event) => setEntry({ ...entry, title: event.target.value })}
-                        style={{ marginBottom: '1rem', fontSize: '1.3rem', fontFamily: 'var(--font-display)', fontWeight: 600 }}
                     />
+                    <input
+                        className="editor-subtitle-input"
+                        type="text"
+                        placeholder="Add a subtitle…"
+                        value={entry.excerpt || ''}
+                        onChange={(event) => setEntry({ ...entry, excerpt: event.target.value })}
+                    />
+                </div>
 
+                {/* Inline properties */}
+                <div className="editor-props">
+                    <div className="editor-prop">
+                        <span className="editor-prop-label"><span className="pi">◉</span> Status</span>
+                        <span className="editor-prop-value">
+                            <span className="prop-status">
+                                <span className="prop-status-dot" />
+                                {entry.status}
+                            </span>
+                        </span>
+                    </div>
+                    <div className="editor-prop">
+                        <span className="editor-prop-label"><span className="pi">📅</span> Date</span>
+                        <span className="editor-prop-value">{entryDate ? new Date(entryDate).toLocaleDateString() : 'No date'}</span>
+                    </div>
+                    <div className="editor-prop">
+                        <span className="editor-prop-label"><span className="pi">🌱</span> Mood</span>
+                        <span className="editor-prop-value">{entry.mood || <span style={{ color: 'var(--text-faint)' }}>Set mood…</span>}</span>
+                    </div>
+                    <div className="editor-prop">
+                        <span className="editor-prop-label"><span className="pi">◈</span> Location</span>
+                        <span className="editor-prop-value">{entry.location || <span style={{ color: 'var(--text-faint)' }}>Set location…</span>}</span>
+                    </div>
+                    <div className="editor-prop">
+                        <span className="editor-prop-label"><span className="pi">⟡</span> Tags</span>
+                        <span className="editor-prop-value">
+                            {selectedTags.length > 0 ? selectedTags.map((tagId) => {
+                                const tag = allTags.find((t) => t.id === tagId);
+                                return tag ? <span key={tagId} className="prop-tag">{tag.name}</span> : null;
+                            }) : <span style={{ color: 'var(--text-faint)' }}>Add tags…</span>}
+                        </span>
+                    </div>
+                </div>
+
+                {/* Info bar */}
+                <div className="editor-info-bar">
+                    <span className="info-pill"><span className="num">{FEATURE_COUNT}+</span> editing features</span>
+                    <span className="info-pill"><span className="num">{wordCount}</span> words</span>
+                    <span className="info-pill">{Math.max(1, Math.ceil(wordCount / 200))} min read</span>
+                </div>
+
+                {/* Editor container */}
+                <div className="editor-canvas-notion">
                     <div className="editor-container editor-container-clean">
                         {editor && (
                             <>
-                                <div className="editor-shell-header editor-shell-header-clean">
-                                    <div className="editor-shell-copy">
-                                        <span className="editor-shell-kicker">Advanced writing editor</span>
-                                        <p className="editor-shell-hint">Slash commands, color, image align, table tools, and {FEATURE_COUNT}+ editing actions are enabled.</p>
-                                    </div>
-                                    <div className="editor-shell-meta">
-                                        <span className="editor-shell-pill">{wordCount} words</span>
-                                        <span className="editor-shell-pill">{Math.max(1, Math.ceil(wordCount / 200))} min read</span>
-                                    </div>
-                                </div>
-
                                 <BubbleMenu
                                     editor={editor}
                                     tippyOptions={{ duration: 120, placement: 'top', maxWidth: 'none' }}
@@ -1008,7 +1079,7 @@ export default function EntryEditor() {
                             </div>
                         )}
 
-                        <div className="editor-canvas editor-canvas-clean">
+                        <div className="editor-content-area">
                             <EditorContent editor={editor} />
                         </div>
 
@@ -1018,113 +1089,107 @@ export default function EntryEditor() {
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div>
-                    <div className="card" style={{ marginBottom: '1rem' }}>
-                        <h3 className="card-title">Details</h3>
-                        <div className="form-group">
-                            <label className="form-label">Status</label>
-                            <select className="form-select" value={entry.status} onChange={(event) => setEntry({ ...entry, status: event.target.value })}>
-                                <option value="draft">Draft</option>
-                                <option value="published">Published</option>
-                                <option value="private">Private</option>
-                            </select>
-                        </div>
-                        <div className="form-group">
-                            <label className="form-label">Entry Date</label>
-                            <input className="form-input" type="datetime-local" value={entryDate} onChange={(event) => setEntryDate(event.target.value)} />
-                            <div style={{ marginTop: '0.4rem' }}>
-                                <button type="button" className="btn btn-ghost btn-sm" onClick={() => setEntryDate('')}>Clear Date</button>
-                            </div>
-                        </div>
-                        <div className="form-group">
-                            <label className="form-label">Excerpt</label>
-                            <textarea className="form-textarea" rows={3} value={entry.excerpt || ''} onChange={(event) => setEntry({ ...entry, excerpt: event.target.value })} placeholder="Brief summary..." />
-                        </div>
-                        <div className="form-group">
-                            <label className="form-label">Cover Image</label>
-                            <select className="form-select" value={coverMediaId} onChange={(event) => selectCoverFromLibrary(event.target.value)}>
-                                <option value="">Choose uploaded image...</option>
-                                {mediaItems.map((media) => (
-                                    <option key={media.id} value={media.id}>
-                                        {media.original_name} ({media.mime_type})
-                                    </option>
-                                ))}
-                            </select>
-                            <div style={{ marginTop: '0.45rem' }}>
-                                <button type="button" className="btn btn-ghost btn-sm" onClick={clearCoverImage}>Clear Cover</button>
-                            </div>
-                        </div>
-                        {entry.cover_image ? (
-                            <div className="form-group">
-                                <img src={entry.cover_image} alt="Cover preview" style={{ width: '100%', borderRadius: 8, border: '1px solid var(--border)' }} />
-                            </div>
-                        ) : null}
+            {/* Right sidebar */}
+            <div className="editor-right">
+                <div className="right-card">
+                    <div className="right-card-title">Details</div>
+                    <div className="right-field">
+                        <label className="right-label">Status</label>
+                        <select className="right-select" value={entry.status} onChange={(event) => setEntry({ ...entry, status: event.target.value })}>
+                            <option value="draft">Draft</option>
+                            <option value="published">Published</option>
+                            <option value="private">Private</option>
+                        </select>
                     </div>
-
-                    <div className="card" style={{ marginBottom: '1rem' }}>
-                        <h3 className="card-title">Metadata</h3>
-                        <div className="form-group">
-                            <label className="form-label">Mood</label>
-                            <input className="form-input" type="text" value={entry.mood || ''} onChange={(event) => setEntry({ ...entry, mood: event.target.value })} placeholder="e.g. reflective" />
-                        </div>
-                        <div className="form-group">
-                            <label className="form-label">Location</label>
-                            <input className="form-input" type="text" value={entry.location || ''} onChange={(event) => setEntry({ ...entry, location: event.target.value })} />
-                        </div>
-                        <div className="form-group">
-                            <label className="form-label">Weather</label>
-                            <input className="form-input" type="text" value={entry.weather || ''} onChange={(event) => setEntry({ ...entry, weather: event.target.value })} />
-                        </div>
-                        <div className="form-group">
-                            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
-                                <input type="checkbox" checked={!!entry.featured} onChange={(event) => setEntry({ ...entry, featured: event.target.checked })} />
-                                <span className="form-label" style={{ margin: 0 }}>Featured</span>
-                            </label>
-                        </div>
+                    <div className="right-field">
+                        <label className="right-label">Entry Date</label>
+                        <input className="right-input" type="datetime-local" value={entryDate} onChange={(event) => setEntryDate(event.target.value)} />
                     </div>
-
-                    <div className="card">
-                        <h3 className="card-title">Tags</h3>
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
-                            {allTags.map((tag) => (
-                                <button
-                                    key={tag.id}
-                                    className="tag-chip"
-                                    style={{
-                                        cursor: 'pointer',
-                                        background: selectedTags.includes(tag.id) ? 'rgba(201,168,76,0.25)' : undefined,
-                                        borderColor: selectedTags.includes(tag.id) ? 'var(--accent)' : undefined,
-                                    }}
-                                    onClick={() => toggleTag(tag.id)}
-                                >
-                                    {tag.name}
-                                </button>
+                    <div className="right-field">
+                        <label className="right-label">Excerpt</label>
+                        <textarea className="right-textarea" rows={3} value={entry.excerpt || ''} onChange={(event) => setEntry({ ...entry, excerpt: event.target.value })} placeholder="Brief summary…" />
+                    </div>
+                    <div className="right-field">
+                        <label className="right-label">Cover Image</label>
+                        <select className="right-select" value={coverMediaId} onChange={(event) => selectCoverFromLibrary(event.target.value)}>
+                            <option value="">Choose image…</option>
+                            {mediaItems.map((media) => (
+                                <option key={media.id} value={media.id}>
+                                    {media.original_name} ({media.mime_type})
+                                </option>
                             ))}
-                            {allTags.length === 0 && <span style={{ fontSize: '0.85rem', color: 'var(--text-faint)' }}>No tags yet</span>}
-                        </div>
-                        <div style={{ marginTop: '0.8rem' }}>
-                            <input
-                                type="text"
-                                className="form-input"
-                                placeholder="Type a new tag and press Enter..."
-                                style={{ fontSize: '0.85rem', padding: '0.4rem 0.6rem' }}
-                                onKeyDown={async (event) => {
-                                    if (event.key === 'Enter' && event.target.value.trim()) {
-                                        event.preventDefault();
-                                        try {
-                                            const newTag = await tagsApi.create({ name: event.target.value.trim() });
-                                            setAllTags((prev) => [...prev, newTag]);
-                                            setSelectedTags((prev) => [...prev, newTag.id]);
-                                            event.target.value = '';
-                                        } catch (error) {
-                                            toast.error(error.message);
-                                        }
-                                    }
-                                }}
-                            />
+                        </select>
+                        {entry.cover_image ? (
+                            <img src={entry.cover_image} alt="Cover" className="cover-preview-img" />
+                        ) : (
+                            <div className="cover-preview">No cover image</div>
+                        )}
+                    </div>
+                </div>
+
+                <div className="right-card">
+                    <div className="right-card-title">Metadata</div>
+                    <div className="right-field">
+                        <label className="right-label">Mood</label>
+                        <input className="right-input" type="text" value={entry.mood || ''} onChange={(event) => setEntry({ ...entry, mood: event.target.value })} placeholder="e.g. contemplative" />
+                    </div>
+                    <div className="right-field">
+                        <label className="right-label">Location</label>
+                        <input className="right-input" type="text" value={entry.location || ''} onChange={(event) => setEntry({ ...entry, location: event.target.value })} />
+                    </div>
+                    <div className="right-field">
+                        <label className="right-label">Weather</label>
+                        <input className="right-input" type="text" value={entry.weather || ''} onChange={(event) => setEntry({ ...entry, weather: event.target.value })} />
+                    </div>
+                    <div className="right-field">
+                        <div className="right-checkbox-row">
+                            <button
+                                type="button"
+                                className={`right-checkbox${entry.featured ? ' checked' : ''}`}
+                                onClick={() => setEntry({ ...entry, featured: !entry.featured })}
+                            >
+                                {entry.featured && '✓'}
+                            </button>
+                            <span>Featured entry</span>
                         </div>
                     </div>
+                </div>
+
+                <div className="right-card">
+                    <div className="right-card-title">Tags</div>
+                    <div className="tag-chips">
+                        {allTags.map((tag) => (
+                            <span
+                                key={tag.id}
+                                className={`tag-chip${selectedTags.includes(tag.id) ? ' active' : ''}`}
+                                onClick={() => toggleTag(tag.id)}
+                            >
+                                {tag.name}
+                            </span>
+                        ))}
+                        {allTags.length === 0 && <span style={{ fontSize: '0.8rem', color: 'var(--text-faint)' }}>No tags yet</span>}
+                    </div>
+                    <input
+                        type="text"
+                        className="right-input"
+                        placeholder="Add tag…"
+                        style={{ marginTop: '0.5rem', fontSize: '0.76rem' }}
+                        onKeyDown={async (event) => {
+                            if (event.key === 'Enter' && event.target.value.trim()) {
+                                event.preventDefault();
+                                try {
+                                    const newTag = await tagsApi.create({ name: event.target.value.trim() });
+                                    setAllTags((prev) => [...prev, newTag]);
+                                    setSelectedTags((prev) => [...prev, newTag.id]);
+                                    event.target.value = '';
+                                } catch (error) {
+                                    toast.error(error.message);
+                                }
+                            }
+                        }}
+                    />
                 </div>
             </div>
         </div>
