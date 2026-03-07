@@ -138,6 +138,16 @@ code {
         opacity: 0.06;
         animation: stoneFlicker 8s ease-in-out infinite, drift 20s ease-in-out infinite;
     }
+
+    .rune-img {
+        position: absolute;
+        object-fit: contain;
+        opacity: 0.07;
+        mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 25%, rgba(0, 0, 0, 0.4) 55%, transparent 75%);
+        -webkit-mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 25%, rgba(0, 0, 0, 0.4) 55%, transparent 75%);
+        filter: drop-shadow(0 0 12px rgba($color-accent, 0.5)) drop-shadow(0 0 30px rgba($color-accent, 0.25));
+        animation: stoneFlicker 8s ease-in-out infinite, drift 20s ease-in-out infinite;
+    }
 }
 
 // ── Header ──
