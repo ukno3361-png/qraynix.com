@@ -28,6 +28,7 @@ const AIBotSettings = React.lazy(() => import('./pages/AIBotSettings.jsx'));
 const AccountPage = React.lazy(() => import('./pages/AccountPage.jsx'));
 const Analytics = React.lazy(() => import('./pages/Analytics.jsx'));
 const DatabaseTools = React.lazy(() => import('./pages/DatabaseTools.jsx'));
+const PageManager = React.lazy(() => import('./pages/PageManager.jsx'));
 
 function AppContent() {
     const { user, loading, refreshAuth } = useAuth();
@@ -74,6 +75,7 @@ function AppContent() {
                     <Route path="account" element={<AccountPage />} />
                     <Route path="analytics" element={<Analytics />} />
                     <Route path="db-tools" element={<DatabaseTools />} />
+                    <Route path="pages" element={<PageManager />} />
                 </Route>
                 <Route path="*" element={<Navigate to="/admin" replace />} />
             </Routes>

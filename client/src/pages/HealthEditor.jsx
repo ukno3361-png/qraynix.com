@@ -5,6 +5,7 @@
 import React, { useState, useEffect } from 'react';
 import { settings as settingsApi } from '../api.js';
 import { useToast } from '../context/ToastContext.jsx';
+import AutocompleteTextarea from '../components/AutocompleteTextarea.jsx';
 
 const EMPTY = {
     health_intro: '',
@@ -84,7 +85,7 @@ export default function HealthEditor() {
 
                 <div className="form-group">
                     <label className="form-label">Intro</label>
-                    <textarea
+                    <AutocompleteTextarea
                         className="form-textarea"
                         rows={4}
                         value={form.health_intro}
@@ -95,7 +96,7 @@ export default function HealthEditor() {
 
                 <div className="form-group">
                     <label className="form-label">Current Situation</label>
-                    <textarea
+                    <AutocompleteTextarea
                         className="form-textarea"
                         rows={6}
                         value={form.health_current}
@@ -106,7 +107,7 @@ export default function HealthEditor() {
 
                 <div className="form-group">
                     <label className="form-label">History & Changes</label>
-                    <textarea
+                    <AutocompleteTextarea
                         className="form-textarea"
                         rows={6}
                         value={form.health_history}
@@ -117,7 +118,7 @@ export default function HealthEditor() {
 
                 <div className="form-group" style={{ marginBottom: 0 }}>
                     <label className="form-label">Notes</label>
-                    <textarea
+                    <AutocompleteTextarea
                         className="form-textarea"
                         rows={5}
                         value={form.health_notes}

@@ -9,6 +9,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { entertainment as api, media as mediaApi } from '../api.js';
 import { useToast } from '../context/ToastContext.jsx';
+import AutocompleteTextarea from '../components/AutocompleteTextarea.jsx';
 
 const TYPES = ['Movie', 'TV Show', 'Music Album', 'Song', 'Podcast', 'Book', 'Game', 'Anime', 'Documentary', 'YouTube', 'Other'];
 const WATCH_STATUSES = ['Watching', 'Completed', 'Dropped', 'Plan to Watch', 'On Hold'];
@@ -272,7 +273,7 @@ export default function EntertainmentManager() {
                         {/* Review Text */}
                         <div className="form-group">
                             <label className="form-label">Review / Thoughts</label>
-                            <textarea className="form-textarea" rows={8} value={form.review_html} onChange={set('review_html')} placeholder="Write your review..." />
+                            <AutocompleteTextarea className="form-textarea" rows={8} value={form.review_html} onChange={set('review_html')} placeholder="Write your review..." />
                         </div>
 
                         {/* External Link */}
@@ -329,7 +330,7 @@ export default function EntertainmentManager() {
                                                     <button className="btn btn-ghost btn-sm" onClick={(e) => {
                                                         e.stopPropagation();
                                                         const audio = new Audio(track.previewUrl);
-                                                        audio.play().catch(() => {});
+                                                        audio.play().catch(() => { });
                                                         setTimeout(() => audio.pause(), 30000);
                                                     }}>▶</button>
                                                 )}

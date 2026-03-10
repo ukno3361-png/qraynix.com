@@ -49,6 +49,23 @@ const createAssistantRouter = (assistantService) => {
         }
     });
 
+    const autocompleteLimiter = createRateLimiter({
+        windowMs: 60 * 1000,
+        maxRequests: 40,
+        message: 'Autocomplete rate limit exceeded.',
+    });
+
+    router.post('/autocomplete', requireAuth, autocompleteLimiter, async (req, res, next) => {
+        try {
+            const payload = await assistantService.autocomplete({
+                context: req.body?.context,
+            });
+            res.json(payload);
+        } catch (err) {
+            next(err);
+        }
+    });
+
     return router;
 };
 

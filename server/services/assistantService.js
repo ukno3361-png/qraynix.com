@@ -343,7 +343,52 @@ ${contextBlock}
         };
     };
 
-    return { getBotConfig, chat, testConnection };
+    const autocomplete = async ({ context }) => {
+        const config = getBotConfig();
+        const text = String(context || '').trim().slice(-600);
+        if (!text || !config.apiKey) return { suggestion: '' };
+
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 8000);
+
+        try {
+            const model = normalizeGeminiModel(config.model)
+                .replace('pro', 'flash-lite')
+                .replace(/^gemini-2\.5-flash$/, 'gemini-2.5-flash-lite');
+
+            const response = await fetch(
+                `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(config.apiKey)}`,
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        systemInstruction: {
+                            role: 'system',
+                            parts: [{ text: 'You are an inline text autocomplete engine. Given the text so far, output ONLY the natural continuation — a few words to one sentence. Do not repeat the input. Do not explain. Do not add quotes or punctuation that was not started. Just the continuation text.' }],
+                        },
+                        contents: [{ role: 'user', parts: [{ text }] }],
+                        generationConfig: { temperature: 0.3, maxOutputTokens: 60 },
+                    }),
+                    signal: controller.signal,
+                },
+            );
+
+            if (!response.ok) return { suggestion: '' };
+
+            const data = await response.json();
+            const raw = String(
+                data?.candidates?.[0]?.content?.parts?.map((p) => String(p?.text || '')).join('') || '',
+            ).trim();
+
+            return { suggestion: raw.slice(0, 200) };
+        } catch (_err) {
+            return { suggestion: '' };
+        } finally {
+            clearTimeout(timeout);
+        }
+    };
+
+    return { getBotConfig, chat, testConnection, autocomplete };
 };
 
 module.exports = { createAssistantService, DEFAULT_DISCLAIMER };

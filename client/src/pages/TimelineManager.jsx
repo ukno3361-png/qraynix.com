@@ -5,6 +5,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { timeline as timelineApi } from '../api.js';
 import { useToast } from '../context/ToastContext.jsx';
+import AutocompleteTextarea from '../components/AutocompleteTextarea.jsx';
 
 const EMPTY = { title: '', description: '', event_date: '', category: 'life', icon: 'ᚱ', color: '#c9a84c', link_url: '', link_label: '' };
 const RUNE_OPTIONS = ['ᚠ', 'ᚢ', 'ᚦ', 'ᚨ', 'ᚱ', 'ᚲ', 'ᚷ', 'ᚹ', 'ᚺ', 'ᚾ', 'ᛁ', 'ᛃ', 'ᛇ', 'ᛈ', 'ᛉ', 'ᛊ', 'ᛏ', 'ᛒ', 'ᛖ', 'ᛗ', 'ᛚ', 'ᛜ', 'ᛞ', 'ᛟ'];
@@ -83,7 +84,7 @@ export default function TimelineManager() {
                     </div>
                     <div className="form-group" style={{ gridColumn: '1 / -1' }}>
                         <label className="form-label">Description</label>
-                        <textarea className="form-textarea" rows={2} value={form.description || ''} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+                        <AutocompleteTextarea className="form-textarea" rows={2} value={form.description || ''} onChange={(e) => setForm({ ...form, description: e.target.value })} />
                     </div>
                     <div className="form-group">
                         <label className="form-label">Category</label>

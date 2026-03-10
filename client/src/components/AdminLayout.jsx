@@ -14,6 +14,7 @@ const NAV_GROUPS = [
             { path: '/admin/dashboard', label: 'Dashboard', icon: '⬡' },
             { path: '/admin/entries', label: 'Entries', icon: '✦' },
             { path: '/admin/entries/new', label: 'New Entry', icon: '✚' },
+            { path: '/admin/pages', label: 'Pages', icon: '☷' },
             { path: '/admin/db-tools', label: 'DB Tools', icon: '⛭' },
         ],
     },
@@ -70,6 +71,7 @@ const BREADCRUMB_MAP = {
     '/admin/ai-bot': 'AI Bot',
     '/admin/settings': 'Site Settings',
     '/admin/account': 'Account',
+    '/admin/pages': 'Pages',
     '/admin/db-tools': 'DB Tools',
 };
 

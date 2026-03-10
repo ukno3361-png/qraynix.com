@@ -5,6 +5,7 @@
 import React, { useState, useEffect } from 'react';
 import { settings as settingsApi } from '../api.js';
 import { useToast } from '../context/ToastContext.jsx';
+import AutocompleteTextarea from '../components/AutocompleteTextarea.jsx';
 
 export default function SiteSettings() {
     const [form, setForm] = useState({});
@@ -55,7 +56,7 @@ export default function SiteSettings() {
                     </div>
                     <div className="form-group">
                         <label className="form-label">Description</label>
-                        <textarea className="form-textarea" rows={2} value={form.description || ''} onChange={(e) => set('description', e.target.value)} />
+                        <AutocompleteTextarea className="form-textarea" rows={2} value={form.description || ''} onChange={(e) => set('description', e.target.value)} />
                     </div>
                     <div className="form-group">
                         <label className="form-label">Footer Text</label>

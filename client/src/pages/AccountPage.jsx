@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { account as accountApi } from '../api.js';
 import { useToast } from '../context/ToastContext.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
+import AutocompleteTextarea from '../components/AutocompleteTextarea.jsx';
 
 export default function AccountPage() {
     const [profile, setProfile] = useState({ display_name: '', email: '', bio: '' });
@@ -70,7 +71,7 @@ export default function AccountPage() {
                     </div>
                     <div className="form-group">
                         <label className="form-label">Bio</label>
-                        <textarea className="form-textarea" rows={3} value={profile.bio} onChange={(e) => setProfile({ ...profile, bio: e.target.value })} />
+                        <AutocompleteTextarea className="form-textarea" rows={3} value={profile.bio} onChange={(e) => setProfile({ ...profile, bio: e.target.value })} />
                     </div>
                     <button className="btn btn-primary" onClick={handleProfileSave} disabled={saving}>{saving ? 'Saving...' : 'Save Profile'}</button>
                 </div>

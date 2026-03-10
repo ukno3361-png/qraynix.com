@@ -4,8 +4,11 @@
  */
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useEditor, EditorContent } from '@tiptap/react';
+import { useEditor, EditorContent, ReactNodeViewRenderer } from '@tiptap/react';
 import { BubbleMenu, FloatingMenu } from '@tiptap/react/menus';
+import ResizableImageView from '../components/editor/ResizableImageView.jsx';
+import { Autocomplete } from '../components/editor/AutocompletePlugin.jsx';
+import AutocompleteTextarea from '../components/AutocompleteTextarea.jsx';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
 import Link from '@tiptap/extension-link';
@@ -94,7 +97,21 @@ const JournalImage = Image.extend({
                 parseHTML: (element) => element.getAttribute('data-align') || 'center',
                 renderHTML: (attributes) => ({ 'data-align': attributes.align || 'center' }),
             },
+            width: {
+                default: null,
+                parseHTML: (element) => {
+                    const w = element.getAttribute('width') || element.style.width;
+                    return w ? parseInt(w, 10) || null : null;
+                },
+                renderHTML: (attributes) => {
+                    if (!attributes.width) return {};
+                    return { width: attributes.width, style: `width: ${attributes.width}px` };
+                },
+            },
         };
+    },
+    addNodeView() {
+        return ReactNodeViewRenderer(ResizableImageView);
     },
 });
 
@@ -264,6 +281,7 @@ export default function EntryEditor() {
             TableHeader,
             TableCell,
             Typography,
+            Autocomplete,
         ],
         content: '',
         editorProps: {
@@ -1109,7 +1127,7 @@ export default function EntryEditor() {
                     </div>
                     <div className="right-field">
                         <label className="right-label">Excerpt</label>
-                        <textarea className="right-textarea" rows={3} value={entry.excerpt || ''} onChange={(event) => setEntry({ ...entry, excerpt: event.target.value })} placeholder="Brief summary…" />
+                        <AutocompleteTextarea className="right-textarea" rows={3} value={entry.excerpt || ''} onChange={(event) => setEntry({ ...entry, excerpt: event.target.value })} placeholder="Brief summary…" />
                     </div>
                     <div className="right-field">
                         <label className="right-label">Cover Image</label>

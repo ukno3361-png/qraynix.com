@@ -6,6 +6,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { settings as settingsApi, assistant as assistantApi } from '../api.js';
 import { useToast } from '../context/ToastContext.jsx';
+import AutocompleteTextarea from '../components/AutocompleteTextarea.jsx';
 
 const DEFAULT_DISCLAIMER = `⚠️ Advisory & Disclaimer
 This interaction is being conducted on behalf of the one who's feeding me bullshittery. Please be advised that the content generated herein—including any jokes, anecdotes, or "facts"—is intended purely for entertainment purposes. Not all information provided is grounded in reality, and much of it is shared in the spirit of lighthearted fun. This is a consequence-free zone designed for play; please do not take the contents literally or use them as a basis for real-world decision-making. But at the end of the day, I more than anyone know, you will do whatever the fuck you want to do.`;
@@ -69,7 +70,8 @@ export default function AIBotSettings() {
     const save = async () => {
         setSaving(true);
         try {
-            await settingsApi.update(form);
+            const updated = await settingsApi.update(form);
+            setForm((prev) => ({ ...prev, ...updated }));
             toast.success('AI bot settings saved');
         } catch (err) {
             toast.error(err.message);
@@ -140,7 +142,7 @@ export default function AIBotSettings() {
 
                     <div className="form-group">
                         <label className="form-label">Personality Prompt</label>
-                        <textarea
+                        <AutocompleteTextarea
                             className="form-textarea"
                             rows={5}
                             value={form.ai_chat_personality || ''}
@@ -165,13 +167,18 @@ export default function AIBotSettings() {
                         <label className="form-label">Gemini API Key</label>
                         <input
                             className="form-input"
-                            type="password"
+                            type="text"
                             value={form.ai_chat_api_key || ''}
                             onChange={(e) => set('ai_chat_api_key', e.target.value)}
                             placeholder="AIza..."
                             autoComplete="off"
+                            spellCheck="false"
                         />
-                        <div className="form-hint">Saved in dashboard settings and used for chatbot responses.</div>
+                        {form.ai_chat_api_key ? (
+                            <div className="form-hint" style={{ marginTop: '0.35rem', color: 'var(--success)' }}>✓ API key configured ({form.ai_chat_api_key.length} chars)</div>
+                        ) : (
+                            <div className="form-hint" style={{ marginTop: '0.35rem', color: 'var(--danger)' }}>✗ No API key — autocomplete and chat will not work</div>
+                        )}
                         <div className="form-hint" style={{ marginTop: '0.35rem' }}>
                             If this field is empty, the server falls back to <strong>GEMINI_API_KEY</strong> from your <strong>.env</strong> file.
                         </div>
@@ -190,7 +197,7 @@ export default function AIBotSettings() {
                     <h3 className="card-title">First Bubble Disclaimer</h3>
                     <div className="form-group">
                         <label className="form-label">Disclaimer Template</label>
-                        <textarea
+                        <AutocompleteTextarea
                             className="form-textarea"
                             rows={10}
                             value={form.ai_chat_disclaimer || DEFAULT_DISCLAIMER}

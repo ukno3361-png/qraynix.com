@@ -5,6 +5,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { thoughtFlash as thoughtFlashApi, media as mediaApi } from '../api.js';
 import { useToast } from '../context/ToastContext.jsx';
+import AutocompleteTextarea from '../components/AutocompleteTextarea.jsx';
 
 const EMPTY = {
     media_url: '',
@@ -213,12 +214,12 @@ export default function ThoughtFlashManager() {
 
                 <div className="form-group">
                     <label className="form-label">Preview Description (card preview)</label>
-                    <textarea className="form-textarea" rows={3} value={form.preview_text} onChange={(e) => setForm({ ...form, preview_text: e.target.value })} />
+                    <AutocompleteTextarea className="form-textarea" rows={3} value={form.preview_text} onChange={(e) => setForm({ ...form, preview_text: e.target.value })} />
                 </div>
 
                 <div className="form-group">
                     <label className="form-label">Thought (shown in modal)</label>
-                    <textarea className="form-textarea" rows={5} value={form.thought_text} onChange={(e) => setForm({ ...form, thought_text: e.target.value })} />
+                    <AutocompleteTextarea className="form-textarea" rows={5} value={form.thought_text} onChange={(e) => setForm({ ...form, thought_text: e.target.value })} />
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '1rem', alignItems: 'end' }}>

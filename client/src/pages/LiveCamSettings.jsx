@@ -5,6 +5,7 @@
 import React, { useEffect, useState } from 'react';
 import { settings as settingsApi, media as mediaApi } from '../api.js';
 import { useToast } from '../context/ToastContext.jsx';
+import AutocompleteTextarea from '../components/AutocompleteTextarea.jsx';
 
 export default function LiveCamSettings() {
     const [form, setForm] = useState({});
@@ -126,7 +127,7 @@ export default function LiveCamSettings() {
 
                     <div className="form-group">
                         <label className="form-label">Description</label>
-                        <textarea className="form-textarea" rows={3} value={form.livecam_description || ''} onChange={(e) => set('livecam_description', e.target.value)} />
+                        <AutocompleteTextarea className="form-textarea" rows={3} value={form.livecam_description || ''} onChange={(e) => set('livecam_description', e.target.value)} />
                     </div>
 
                     <div className="form-group">

@@ -47,13 +47,13 @@ const createAdminRouter = (config) => {
           <title>Qraynix Admin</title>
           <meta charset="utf-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <style>body{font-family:sans-serif;display:grid;place-items:center;min-height:100vh;background:#0b0b0d;color:#e6e6ea;}code{background:#1e2130;padding:2px 8px;border-radius:4px;}</style>
         </head>
         <body>
-          <div id="root"></div>
-          <script>
-            // In dev mode, redirect to Vite dev server
-            window.location.href = 'http://localhost:5173/';
-          </script>
+          <div style="text-align:center">
+            <h2>Admin build not found</h2>
+            <p>Run <code>npm run build:admin</code> then refresh.</p>
+          </div>
         </body>
         </html>
       `);

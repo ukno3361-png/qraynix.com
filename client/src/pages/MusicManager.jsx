@@ -5,6 +5,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { music as musicApi, media as mediaApi, settings as settingsApi } from '../api.js';
 import { useToast } from '../context/ToastContext.jsx';
+import AutocompleteTextarea from '../components/AutocompleteTextarea.jsx';
 
 const EMPTY = {
     media_id: '',
@@ -233,7 +234,7 @@ export default function MusicManager() {
 
                 <div className="form-group">
                     <label className="form-label">Spotify Playlist Notes (public side card)</label>
-                    <textarea
+                    <AutocompleteTextarea
                         className="form-textarea"
                         rows={3}
                         value={spotifyPlaylistNotes}
@@ -301,7 +302,7 @@ export default function MusicManager() {
 
                 <div className="form-group">
                     <label className="form-label">Notes / Opinion (shown on public page for this song)</label>
-                    <textarea className="form-textarea" rows={5} value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} />
+                    <AutocompleteTextarea className="form-textarea" rows={5} value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} />
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>

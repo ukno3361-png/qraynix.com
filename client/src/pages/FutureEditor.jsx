@@ -5,6 +5,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { future as futureApi } from '../api.js';
 import { useToast } from '../context/ToastContext.jsx';
+import AutocompleteTextarea from '../components/AutocompleteTextarea.jsx';
 
 const EMPTY = {
     title: '',
@@ -164,7 +165,7 @@ export default function FutureEditor() {
 
                 <div className="form-group">
                     <label className="form-label">Message</label>
-                    <textarea className="form-textarea" rows={6} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder="Write to your future self..." />
+                    <AutocompleteTextarea className="form-textarea" rows={6} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder="Write to your future self..." />
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>

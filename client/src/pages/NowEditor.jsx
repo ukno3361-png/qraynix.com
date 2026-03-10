@@ -5,6 +5,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { now as nowApi } from '../api.js';
 import { useToast } from '../context/ToastContext.jsx';
+import AutocompleteTextarea from '../components/AutocompleteTextarea.jsx';
 
 const EMPTY = { title: '', content: '', icon: '', sort_order: '', visible: true };
 
@@ -66,7 +67,7 @@ export default function NowEditor() {
                 </div>
                 <div className="form-group">
                     <label className="form-label">Content</label>
-                    <textarea className="form-textarea" rows={3} value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} />
+                    <AutocompleteTextarea className="form-textarea" rows={3} value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} />
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                     <div className="form-group">

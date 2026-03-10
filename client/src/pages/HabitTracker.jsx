@@ -5,6 +5,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { habits as habitsApi } from '../api.js';
 import { useToast } from '../context/ToastContext.jsx';
+import AutocompleteTextarea from '../components/AutocompleteTextarea.jsx';
 
 const EMPTY = {
     name: '',
@@ -162,7 +163,7 @@ export default function HabitTracker() {
 
                 <div className="form-group">
                     <label className="form-label">Description</label>
-                    <textarea className="form-textarea" rows={3} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+                    <AutocompleteTextarea className="form-textarea" rows={3} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>

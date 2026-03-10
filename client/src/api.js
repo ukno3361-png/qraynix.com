@@ -212,6 +212,7 @@ export const settings = {
 // ── Assistant ──
 export const assistant = {
     testConnection: (data) => request(`${API_BASE}/assistant/test`, { method: 'POST', body: JSON.stringify(data) }),
+    autocomplete: (data) => request(`${API_BASE}/assistant/autocomplete`, { method: 'POST', body: JSON.stringify(data) }),
 };
 
 // ── DB Tools ──
